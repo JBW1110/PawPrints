@@ -174,7 +174,7 @@ export default {
     top: 0;
     left: 0;
     height: 100%;
-    width: 300px;
+    width: 400px;
     padding: 50px;
     z-index: 200;
     transition: 1.25s;

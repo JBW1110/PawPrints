@@ -1,5 +1,6 @@
 import VueRouter from 'vue-router'
 import LoginPage from '@/pages/LoginPage'
+import MainPage from '@/pages/MainPage'
 
 const router = new VueRouter({
   // mode: 'hash', //hash||history
@@ -8,7 +9,12 @@ const router = new VueRouter({
           name: 'login',
           path: '/',
           component:LoginPage
-        }
+        },
+        {
+          name: "mainpage",
+          path: '/mainpage',
+          component: MainPage
+        },
     ]
 })
 
