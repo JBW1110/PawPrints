@@ -16,7 +16,7 @@
         <i class="el-icon-document"></i>
         <span slot="title">帖子管理</span>
       </el-menu-item>
-      <el-menu-item index="/mainpage" router>
+      <el-menu-item index="/setadmin" router>
         <i class="el-icon-user"></i>
         <span slot="title">新增管理</span>
       </el-menu-item>
@@ -32,7 +32,7 @@
         <i class="el-icon-location-information"></i>
         <span slot="title">智能追踪</span>
       </el-menu-item>
-      <el-menu-item index="/mainpage" router>
+      <el-menu-item index="/usercenter" router>
         <i class="el-icon-user-solid"></i>
         <span slot="title">个人中心</span>
       </el-menu-item>

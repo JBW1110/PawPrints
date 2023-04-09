@@ -73,10 +73,12 @@ export default {
       con['email'] = this.loginForm.email;
       con['password'] = this.loginForm.password;
       this.$axios({
-        url: 'http://127.0.0.1:8000/api/login_user',
+        // url: 'http://127.0.0.1:8000/api/login_user',
+        url: 'https://console-mock.apipost.cn/mock/ee1db6c6-5b36-4979-be95-403cf3b54032?apipost_id=21a598',
         method: 'post',
-        data: Qs.stringify(con),
+        data: Qs.stringify(con)
       }).then((ret) => {
+        console.log(ret.data)
         if (ret.data.code === 0) {
           this.$message.success("登录成功");
           this.$router.push('/mainpage');
