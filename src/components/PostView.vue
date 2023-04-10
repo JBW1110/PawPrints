@@ -18,7 +18,7 @@
         </el-dropdown>
       </div>
     </div>
-    <post-list :posts="postList"></post-list>
+    <post-list :posts="postList" is-view="true"></post-list>
   </div>
 </template>
 

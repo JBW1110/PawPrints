@@ -4,13 +4,13 @@
     <div class="postBar" v-for="post in posts" :key="post.data" @click="post.show = !post.show">
       <div><img :src="post.cover" alt="帖子封面" class="post_picture"></div>
       <div class="post_name">{{ post.name }}</div>
-      <div class="post_delete">
+      <div class="post_delete" v-show="isView">
         <v-btn elevation="10" icon color="red" @click="deletePost(post)"
                style="margin-right: 5px">
           <i class="el-icon-close" style="font-size: 30px;"></i>
         </v-btn>
       </div>
-      <div style="float:right;margin-right: 50px;margin-top: 70px">
+      <div style="float:right;margin-right: 50px;margin-top: 70px" v-show="isView">
         <v-row>
           <v-btn icon color="deep-orange">
             <svg-icon type="mdi" :path="pathUp"></svg-icon>
@@ -34,6 +34,7 @@
                 align="center"
                 justify="end"
                 style="margin-right: 20px;"
+                v-show="isView"
             >
               <v-btn icon color="deep-orange">
                 <svg-icon type="mdi" :path="pathUp"></svg-icon>
@@ -48,7 +49,26 @@
           <v-card-text style="margin-top: 20px">
             <pre>{{ post.content }}</pre>
           </v-card-text>
-          <v-list>
+          <v-textarea
+              v-model="请输入审核理由"
+              auto-grow
+              filled
+              clearable
+              color="deep-purple"
+              label="请输入审核理由"
+              rows="1"
+              v-show="isCheck"
+          >
+          </v-textarea>
+          <v-card-actions v-show="isCheck">
+            <v-btn @click="submit" style="margin-top: 20px;float: left;width: 20px" color="light-green">
+              通过
+            </v-btn>
+            <v-btn @click="submit" style="margin-top: 20px;float: left;width: 20px" color="red">
+              拒绝
+            </v-btn>
+          </v-card-actions>
+          <v-list v-show="isView">
             <v-list-item
                 v-for="comment in post.comments"
                 :key="comment.comment_id"
@@ -76,18 +96,23 @@
               </v-card>
             </v-list-item>
           </v-list>
-          <v-card-text style="margin-top: 30px">参与讨论：</v-card-text>
+          <v-card-text style="margin-top: 30px" v-show="isView">参与讨论：</v-card-text>
           <mavon-editor
               v-model="post.newComment.content"
+              v-show="isView"
               style="margin-top: 20px;height: 100%;width:100%;align-self: center"
               ref=md
               @change="change"
               fontSize="16px">
           </mavon-editor>
-          <v-card-actions>
+          <v-card-actions v-show="isView">
             <v-btn @click="submit" style="margin-top: 20px;float: left;width: 20px" color="primary">
               评论
             </v-btn>
+          </v-card-actions>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="post.show = false">关闭</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -102,7 +127,7 @@ import SvgIcon from '@jamescoyle/vue-icon';
 
 export default {
   name: 'PostList',
-  props: ["posts"],
+  props: ["posts","isView","isCheck"],
   components:{SvgIcon},
   data(){
     return {
