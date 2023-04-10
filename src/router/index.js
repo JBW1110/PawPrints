@@ -3,6 +3,7 @@ import LoginPage from '@/pages/LoginPage'
 import MainPage from '@/pages/MainPage'
 import UserCenter from '@/pages/UserCenter'
 import SetAdmin from '@/pages/SetAdmin'
+import PostManage from '@/pages/PostManage'
 
 const router = new VueRouter({
   // mode: 'hash', //hash||history
@@ -26,6 +27,11 @@ const router = new VueRouter({
           name: "setadmin",
           path: '/setadmin',
           component: SetAdmin,
+        },
+        {
+          name: "postmanage",
+          path: '/postmanage',
+          component: PostManage,
         }
     ]
 })

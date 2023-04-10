@@ -12,7 +12,7 @@
         <i class="el-icon-collection"></i>
         <span slot="title">动物档案</span>
       </el-menu-item>
-      <el-menu-item index="/mainpage" router>
+      <el-menu-item index="/postmanage" router>
         <i class="el-icon-document"></i>
         <span slot="title">帖子管理</span>
       </el-menu-item>
