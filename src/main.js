@@ -26,4 +26,4 @@ new Vue({
   beforeCreate() {
     Vue.prototype.$bus = this //安装全局事件总线（任意组件间通信）
   }
-}).$mount('#app')
+})

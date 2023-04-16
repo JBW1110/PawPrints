@@ -4,10 +4,11 @@
 
 <script>
 export default {
-  name: 'PostAdd'
+  name: 'PostAdd',
 }
 </script>
 
 <style scoped>
 
 </style>
+

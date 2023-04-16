@@ -14,20 +14,13 @@
               color="deep-purple accent-4"
               left
           >
-            <v-tab>查看</v-tab>
-            <v-tab>审核</v-tab>
-            <v-tab>添加</v-tab>
+            <v-tab>审批</v-tab>
+            <v-tab>发布</v-tab>
             <v-tab-item>
-              <v-icon color="blue">mdi-clipboard-check-multiple-outline</v-icon>
-              <post-view></post-view>
+              <adoption-approval></adoption-approval>
             </v-tab-item>
             <v-tab-item>
-              <v-icon color="blue">mdi-clipboard-check-multiple-outline</v-icon>
-              <post-check></post-check>
-            </v-tab-item>
-            <v-tab-item>
-              <v-icon color="blue">mdi-clipboard-check-multiple-outline</v-icon>
-              <post-add></post-add>
+              <adoption-publish></adoption-publish>
             </v-tab-item>
           </v-tabs>
         </v-app>
@@ -37,15 +30,14 @@
 </template>
 
 <script>
-import PostView from '@/components/PostView'
-import PostCheck from '@/components/PostCheck'
-import PostAdd from '@/components/PostAdd'
 import MyHeader from '@/components/MyHeader'
 import SideBar from '@/components/SideBar'
+import AdoptionApproval from '@/components/AdoptionApproval'
+import AdoptionPublish from '@/components/AdoptionPublish'
 
 export default {
-  name: 'PostManage',
-  components: {PostView,PostCheck,PostAdd,MyHeader,SideBar},
+  name: 'AnimalAdoption',
+  components: {AdoptionPublish,AdoptionApproval,MyHeader,SideBar},
 }
 </script>
 

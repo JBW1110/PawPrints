@@ -59,16 +59,6 @@ export default {
   components: {MyHeader, SideBar},
   data() {
     return {
-      items: [{
-        id: 1,
-        label: "社长"
-      }, {
-        id: 2,
-        label: "副社长"
-      }, {
-        id: 3,
-        label: "办公室部长"
-      }],
       members: [{
         user_id: "123",
         real_name: "吴佳锐",

@@ -8,7 +8,7 @@
              :collapse="isCollapse"
              :collapse-transition="false"
     >
-      <el-menu-item index="/mainpage" router>
+      <el-menu-item index="/animalfile" router>
         <i class="el-icon-collection"></i>
         <span slot="title">动物档案</span>
       </el-menu-item>
@@ -20,7 +20,7 @@
         <i class="el-icon-user"></i>
         <span slot="title">新增管理</span>
       </el-menu-item>
-      <el-menu-item index="/mainpage" router>
+      <el-menu-item index="/animaladoption" router>
         <i class="el-icon-house"></i>
         <span slot="title">动物领养</span>
       </el-menu-item>

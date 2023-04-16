@@ -15,19 +15,14 @@
               left
           >
             <v-tab>查看</v-tab>
-            <v-tab>审核</v-tab>
             <v-tab>添加</v-tab>
             <v-tab-item>
               <v-icon color="blue">mdi-clipboard-check-multiple-outline</v-icon>
-              <post-view></post-view>
+              <file-view></file-view>
             </v-tab-item>
             <v-tab-item>
               <v-icon color="blue">mdi-clipboard-check-multiple-outline</v-icon>
-              <post-check></post-check>
-            </v-tab-item>
-            <v-tab-item>
-              <v-icon color="blue">mdi-clipboard-check-multiple-outline</v-icon>
-              <post-add></post-add>
+              <file-add></file-add>
             </v-tab-item>
           </v-tabs>
         </v-app>
@@ -37,15 +32,14 @@
 </template>
 
 <script>
-import PostView from '@/components/PostView'
-import PostCheck from '@/components/PostCheck'
-import PostAdd from '@/components/PostAdd'
 import MyHeader from '@/components/MyHeader'
 import SideBar from '@/components/SideBar'
+import FileView from '@/components/FileView'
+import FileAdd from '@/components/FileAdd'
 
 export default {
-  name: 'PostManage',
-  components: {PostView,PostCheck,PostAdd,MyHeader,SideBar},
+  name: 'AnimalFile',
+  components: {FileView,FileAdd,MyHeader,SideBar},
 }
 </script>
 
