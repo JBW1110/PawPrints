@@ -12,7 +12,8 @@
           </v-list-item-avatar>
           <v-list-item-content style="padding-left: 10px">
             <v-list-item-title v-text="member.real_name"></v-list-item-title>
-            <v-list-item-subtitle v-text="member.email"></v-list-item-subtitle>
+            <v-list-item-subtitle class="text--primary" v-text="member.email"></v-list-item-subtitle>
+            <v-list-item-subtitle v-text="member.address"></v-list-item-subtitle>
           </v-list-item-content>
           <v-spacer></v-spacer>
           <v-btn color="blue lighten-3"
@@ -80,13 +81,15 @@ export default {
             "\n" +
             "有的家庭认养轻松又简单，有的则是烦琐又复杂，需要你根据自身的情况和繁育者的要求，权衡之后再决定是否认养幼猫。",
         show: false,
+        address:"北京航空航天大学",
         reason:"",
       }, {
         user_id: "20373201",
         real_name: "蒋博文",
         avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
         email:"738822360@qq.com",
-        show: true,
+        show: false,
+        address:"北京航空航天大学",
         reason: "",
       }]
     }
