@@ -18,12 +18,13 @@
       <v-list subheader>
         <v-list-item
             v-for="message in messages"
-            :key="message.time">
+            :key="message.time"
+            v-show="message">
           <v-list-item-content>
             <v-list-item-title v-text="message.time"></v-list-item-title>
             <v-card-text v-text="message.content"></v-card-text>
           </v-list-item-content>
-          <el-button type="success" icon="el-icon-check" circle @click="deleteMessage()"></el-button>
+          <el-button type="success" icon="el-icon-check" circle @click="deleteMessage(message.id)"></el-button>
         </v-list-item>
         <el-button icon="el-icon-finished" style="margin-left: 10px" @click="deleteAllMessages">全部已读</el-button>
         <v-divider></v-divider>
@@ -35,6 +36,8 @@
 
 <script>
 // import Qs from "qs";
+
+import Qs from 'qs'
 
 export default {
   name: "MyHeader",
@@ -62,11 +65,59 @@ export default {
       localStorage.clear()
     },
     getMessages() {
+      this.$axios({
+        url:"http://localhost:8080/getMessageList",
+        method: 'post',
+        headers: {
+          'token': localStorage.getItem('token')
+        }
+      }).then((res)=>{
+        if(res.data.code===200){
+          this.messages = res.data.data
+        } else if (res.data.code===404){
+          this.$message.error("消息列表获取错误")
+        } else this.$notify.error(res.data.message)
+      })
     },
-    deleteMessage() {
+    deleteMessage(id) {
+      this.$axios({
+        url:"http://localhost:8080/changeMessageState",
+        method: 'post',
+        headers: {
+          'token': localStorage.getItem('token')
+        },
+        data: Qs.stringify({
+          messageId:id,
+          newStatus:"已读",
+        })
+      }).then((res)=>{
+        if(res.data.code===200){
+          this.messages = this.messages.filter((message) => {
+            return message.id !== id
+          })
+        } else if (res.data.code===404){
+          this.$message.error("已读错误")
+        } else this.$notify.error(res.data.message)
+      })
     },
     deleteAllMessages() {
+      this.$axios({
+        url:"http://localhost:8080/ReadAllMessage",
+        method: 'post',
+        headers: {
+          'token': localStorage.getItem('token')
+        }
+      }).then((res)=>{
+        if(res.data.code===200){
+          this.messages = []
+        } else if (res.data.code===404){
+          this.$message.error("全部已读错误")
+        } else this.$notify.error(res.data.message)
+      })
     }
+  },
+  mounted () {
+    this.getMessages();
   }
 }
 </script>
