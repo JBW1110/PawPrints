@@ -6,6 +6,7 @@ import SetAdmin from '@/pages/SetAdmin'
 import PostManage from '@/pages/PostManage'
 import AnimalFile from '@/pages/AnimalFile'
 import AnimalAdoption from '@/pages/AnimalAdoption'
+import HelpManage from '@/pages/HelpManage'
 
 const router = new VueRouter({
   // mode: 'hash', //hash||history
@@ -44,6 +45,11 @@ const router = new VueRouter({
           name: "animaladoption",
           path: '/animaladoption',
           component: AnimalAdoption,
+        },
+        {
+          name: "helpmanage",
+          path: '/helpmanage',
+          component: HelpManage,
         }
     ]
 })

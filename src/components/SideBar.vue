@@ -24,7 +24,7 @@
         <i class="el-icon-house"></i>
         <span slot="title">动物领养</span>
       </el-menu-item>
-      <el-menu-item index="/mainpage" router>
+      <el-menu-item index="/helpmanage" router>
         <i class="el-icon-phone-outline"></i>
         <span slot="title">求助管理</span>
       </el-menu-item>
@@ -78,7 +78,7 @@ export default {
 }
 </script>
 <style>
-.hid{
-  display: none;
-}
+/*.hid{*/
+/*  display: none;*/
+/*}*/
 </style>
