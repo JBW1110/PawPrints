@@ -81,7 +81,7 @@ export default {
         console.log(ret.data)
         if (ret.data.code === 0) {
           this.$message.success("登录成功");
-          this.$router.push('/mainpage');
+          this.$router.push('/usercenter');
         } else this.$notify.error(ret.data.message+"，登录失败");
       })
     },

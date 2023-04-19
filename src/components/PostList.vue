@@ -50,7 +50,7 @@
             <pre>{{ post.content }}</pre>
           </v-card-text>
           <v-textarea
-              v-model="请输入审核理由"
+              v-model="post.reason"
               auto-grow
               filled
               clearable
@@ -133,6 +133,17 @@ export default {
     return {
       pathUp:mdiThumbUp,
       pathDown:mdiThumbDown,
+    }
+  },
+  methods: {
+    submit(){
+
+    },
+    deletePost(){
+
+    },
+    change(){
+
     }
   }
 }

@@ -38,6 +38,7 @@ export default {
         show: false,
         like: 5,
         dislike: 2,
+        reason:"",
         newComment:{
           content:"",
         },
@@ -82,6 +83,14 @@ export default {
             "\n" +
             "如果要投喂猫猫，请准备猫粮、冻干或主食罐头，千万不要喂猫咪人类的食物！！！"
       }]
+    }
+  },
+  methods:{
+    searchPost(){
+
+    },
+    handleSelectTag(){
+
     }
   }
 }

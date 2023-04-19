@@ -1,77 +1,79 @@
 <template>
-  <div class="main-box">
-    <div class="container">
-      <el-form :model="createFileForm">
-        <div class="addTitle">动物档案</div>
-        <h3 style="margin-bottom: 20px;color: #4b70e2;float: left">请上传动物照片</h3>
-        <el-form-item>
-          <el-upload
-              :auto-upload="true"
-              :on-success="handleAvatarSuccess"
-              :limit=1
-              multiple
-              accept=".png,.jpg,.jepg"
-              action="http://127.0.0.1:8000/upload/img"
-              list-type="picture-card"
-              ref="upload"
-              style="margin-bottom: 20px">
-            <i slot="default" class="el-icon-plus"></i>
-            <div slot="file" slot-scope="{file}">
-              <img
-                  class="el-upload-list__item-thumbnail"
-                  :src="file.url" alt=""
-              >
-              <span class="el-upload-list__item-actions">
-                    <span
-                        class="el-upload-list__item-preview"
-                        @click="handlePictureCardPreview(file)"
-                    >
-                      <i class="el-icon-zoom-in"></i>
-                    </span>
-                    <span
-                        v-if="!disabled"
-                        class="el-upload-list__item-delete"
-                        @click="handleRemove(file)"
-                    >
-                      <i class="el-icon-delete"></i>
+  <v-app>
+    <div class="main-box">
+      <div class="container">
+        <el-form :model="createFileForm">
+          <div class="addTitle">动物档案</div>
+          <h3 style="margin-bottom: 20px;color: #4b70e2;float: left">请上传动物照片</h3>
+          <el-form-item>
+            <el-upload
+                :auto-upload="true"
+                :on-success="handleAvatarSuccess"
+                :limit=1
+                multiple
+                accept=".png,.jpg,.jepg"
+                action="http://127.0.0.1:8000/upload/img"
+                list-type="picture-card"
+                ref="upload"
+                style="margin-bottom: 20px">
+              <i slot="default" class="el-icon-plus"></i>
+              <div slot="file" slot-scope="{file}">
+                <img
+                    class="el-upload-list__item-thumbnail"
+                    :src="file.url" alt=""
+                >
+                <span class="el-upload-list__item-actions">
+                      <span
+                          class="el-upload-list__item-preview"
+                          @click="handlePictureCardPreview(file)"
+                      >
+                        <i class="el-icon-zoom-in"></i>
                       </span>
-                  </span>
-            </div>
-          </el-upload>
-          <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" alt="">
-          </el-dialog>
-        </el-form-item>
-        <el-form-item prop="name">
-          <el-input v-model="createFileForm.name" class="form__input" type="text" placeholder="昵称"/>
-        </el-form-item>
-        <el-form-item prop="type">
-          <el-input v-model="createFileForm.type" class="form__input" type="text" placeholder="种类"/>
-        </el-form-item>
-        <el-form-item prop="character">
-          <el-input v-model="createFileForm.character" class="form__input" type="text" placeholder="性格"/>
-        </el-form-item>
-        <el-form-item prop="weight">
-          <el-input v-model="createFileForm.weight" class="form__input" type="text" placeholder="体重"/>
-        </el-form-item>
-        <el-form-item prop="status">
-          <el-select v-model="createFileForm.status" class="form__input" placeholder="绝育状态" style="display: block;">
-            <el-option label="已绝育" value="已绝育"></el-option>
-            <el-option label="未绝育" value="未绝育"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="description">
-          <el-input v-model="createFileForm.description" class="form__input" type="text" placeholder="描述"/>
-        </el-form-item>
-        <el-form-item prop="location">
-          <el-input v-model="createFileForm.location" class="form__input" type="text" placeholder="出没位置"/>
-        </el-form-item>
-        <el-form-item>
-          <div class="primary-btn" @click="create">添加档案</div>
-        </el-form-item>
-      </el-form>
+                      <span
+                          v-if="!disabled"
+                          class="el-upload-list__item-delete"
+                          @click="handleRemove(file)"
+                      >
+                        <i class="el-icon-delete"></i>
+                        </span>
+                    </span>
+              </div>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible">
+              <img width="100%" :src="dialogImageUrl" alt="">
+            </el-dialog>
+          </el-form-item>
+          <el-form-item prop="name">
+            <el-input v-model="createFileForm.name" class="form__input" type="text" placeholder="昵称"/>
+          </el-form-item>
+          <el-form-item prop="type">
+            <el-input v-model="createFileForm.type" class="form__input" type="text" placeholder="种类"/>
+          </el-form-item>
+          <el-form-item prop="character">
+            <el-input v-model="createFileForm.character" class="form__input" type="text" placeholder="性格"/>
+          </el-form-item>
+          <el-form-item prop="weight">
+            <el-input v-model="createFileForm.weight" class="form__input" type="text" placeholder="体重"/>
+          </el-form-item>
+          <el-form-item prop="status">
+            <el-select v-model="createFileForm.status" class="form__input" placeholder="绝育状态" style="display: block;">
+              <el-option label="已绝育" value="已绝育"></el-option>
+              <el-option label="未绝育" value="未绝育"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item prop="description">
+            <el-input v-model="createFileForm.description" class="form__input" type="text" placeholder="描述"/>
+          </el-form-item>
+          <el-form-item prop="location">
+            <el-input v-model="createFileForm.location" class="form__input" type="text" placeholder="出没位置"/>
+          </el-form-item>
+          <el-form-item>
+            <div class="primary-btn" @click="create">添加档案</div>
+          </el-form-item>
+        </el-form>
+      </div>
     </div>
-  </div>
+  </v-app>
 </template>
 
 <script>
@@ -95,6 +97,9 @@ export default {
     }
   },
   methods: {
+    create(){
+
+    },
     //清除图片缓存
     handleRemove(file) {
       console.log(file)
