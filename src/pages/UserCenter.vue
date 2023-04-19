@@ -19,16 +19,18 @@
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-postcard"></i>
-                编号
+                昵称
               </template>
-              {{ user.user_id }}
+              <label v-show="!isEdit">{{ user.nickName }}</label>
+              <el-input size="mini" v-model="user.nickName" v-show="isEdit"></el-input>
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
                 <i class="el-icon-time"></i>
-                注册时间
+                喜爱动物
               </template>
-              {{ user.time }}
+              <label v-show="!isEdit">{{ user.animalLike }}</label>
+              <el-input size="mini" v-model="user.animalLike" v-show="isEdit"></el-input>
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
@@ -44,25 +46,25 @@
               </template>
               {{ user.level === 1 ? '超级管理员' : '管理员'}}
             </el-descriptions-item>
-            <el-descriptions-item>
-              <template slot="label">
-                <i class="el-icon-sex"></i>
-                性别
-              </template>
-              <label v-show="!isEdit">{{ user.sex }}</label>
-              <template>
-                <el-radio size="mini" v-model="user.sex" v-show="isEdit" label="男">男</el-radio>
-                <el-radio size="mini" v-model="user.sex" v-show="isEdit" label="女">女</el-radio>
-              </template>
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template slot="label">
-                <i class="el-icon-mobile-phone"></i>
-                手机号
-              </template>
+<!--            <el-descriptions-item>-->
+<!--              <template slot="label">-->
+<!--                <i class="el-icon-sex"></i>-->
+<!--                性别-->
+<!--              </template>-->
+<!--              <label v-show="!isEdit">{{ user.sex }}</label>-->
+<!--              <template>-->
+<!--                <el-radio size="mini" v-model="user.sex" v-show="isEdit" label="男">男</el-radio>-->
+<!--                <el-radio size="mini" v-model="user.sex" v-show="isEdit" label="女">女</el-radio>-->
+<!--              </template>-->
+<!--            </el-descriptions-item>-->
+<!--            <el-descriptions-item>-->
+<!--              <template slot="label">-->
+<!--                <i class="el-icon-mobile-phone"></i>-->
+<!--                手机号-->
+<!--              </template>-->
               <label v-show="!isEdit">{{ user.phone }}</label>
               <el-input size="mini" v-model="user.phone" v-show="isEdit"></el-input>
-            </el-descriptions-item>
+<!--            </el-descriptions-item>-->
           </el-descriptions>
           <div class="flexs">
             <el-button type="primary" @click="submitChangeInfo">{{ mode }}</el-button>
@@ -88,13 +90,10 @@ export default {
     return {
       id:localStorage.getItem('user_id'),
       user: {
-        user_id: "20373201",
-        password: "123456",
-        time: "2023-4-1",
-        sex: "男",
-        phone: "19949138085",
-        email: "738822360@qq.com",
-        level: 1,
+        animalLike:"",
+        email:"",
+        nickName:"",
+        role:""
       },
       isEdit: false
     }
@@ -102,39 +101,38 @@ export default {
   methods: {
     submitChangeInfo() {
       if (this.isEdit) {
-        this.$axios.post(
-            "http://127.0.0.1:8000/api/update_user_information",
-            Qs.stringify(
-                this.user
-            )
-        ).then((res) => {
-          if (res.data.code === 0) {
+        this.$axios({
+          url:"http://localhost:8080/changeBaseInfo",
+          method: 'post',
+          headers: {
+            'token': localStorage.getItem('token')
+          },
+          data: Qs.stringify({
+            name: this.user.nickName,
+            animalLike:this.user.animalLike,
+          })
+        }).then((res) => {
+          if (res.data.code === 200) {
             this.$bus.$emit('showSnackBar', "你已成功修改信息！")
           } else this.$notify.error(res.data.message)
-        }).catch((error) => {
-          console.log(error)
         })
-        /*
-        DO:提交基本信息（不包括密码和头像【在另一个组件】）修改的接口，
-         此时前端容器存储的即为最新的需要保存的信息，将其传回后端保存
-         showSnackBar是我实现的一个组件，用以方便地提示用户操作结果，调用示例如下：
-         */
       }
       this.isEdit = !this.isEdit
     },
-    getUserInformation() {
-      this.$axios.post(
-          "http://127.0.0.1:8000/api/get_user_information",
-          Qs.stringify({
-            'user_id': this.$router.history.current.params.id
-          })
-      ).then((res) => {
-        if (res.data.code === 0) {
+    getUserInformation: function () {
+      this.$axios({
+        url:"http://localhost:8080/user/info",
+        method: 'post',
+        headers: {
+          'token':localStorage.getItem('token'),
+          // 'content-type':'multipart/form-data'
+        }
+      }).then((res) => {
+        // console.log(res.data)
+        if (res.data.code === 200) {
           // console.log(res.data)
-          this.user = res.data.user
+          this.user = res.data.data
         } else this.$notify.error(res.data.message)
-      }).catch((error) => {
-        console.log(error)
       })
     },
   },
@@ -150,22 +148,6 @@ export default {
   mounted() {
     this.getUserInformation()
   },
-  beforeRouteUpdate(to,from,next){
-    this.$axios.post(
-        "http://127.0.0.1:8000/api/get_user_information",
-        Qs.stringify({
-          'user_id': to.params.id
-        })
-    ).then((res) => {
-      if (res.data.code === 0) {
-        console.log(res.data)
-        this.user = res.data.user
-      } else this.$notify.error(res.data.message)
-    }).catch((error) => {
-      console.log(error)
-    })
-    next()
-  }
 }
 </script>
 
@@ -182,21 +164,21 @@ export default {
   margin-top: 10px;
 }
 
-.el-icon {
-  color: cornflowerblue;
-}
+/*.el-icon {*/
+/*  color: cornflowerblue;*/
+/*}*/
 
-.el-icon-sex {
-  background: url("../assets/sex.png") no-repeat;
-  font-size: 16px;
-  background-size: cover;
-}
+/*.el-icon-sex {*/
+/*  background: url("../assets/sex.png") no-repeat;*/
+/*  font-size: 16px;*/
+/*  background-size: cover;*/
+/*}*/
 
-.el-icon-sex:before {
-  content: "ccc";
-  font-size: 1px;
-  color: rgba(255, 255, 255, 0);
-}
+/*.el-icon-sex:before {*/
+/*  content: "ccc";*/
+/*  font-size: 1px;*/
+/*  color: rgba(255, 255, 255, 0);*/
+/*}*/
 
 .el-icon-email {
   background: url("../assets/email.png") no-repeat;

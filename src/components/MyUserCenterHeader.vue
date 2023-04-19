@@ -111,27 +111,30 @@ export default {
     DO: 验证密码正确性的接口
      */
     submitForm(formName) {
-      console.log("验证密码正确性")
-      console.log(formName)
       this.$refs[formName].validate((valid) => {
-        console.log(valid)
+        // console.log(valid)
         if (valid) {
-          this.$axios.post(
-              "http://127.0.0.1:8000/api/modify_password",
-              Qs.stringify({
-                jwt: {'code':localStorage.getItem('code'),'user_id':localStorage.getItem('user_id'),'time':localStorage.getItem('time')},
-                old_password:this.ruleForm.oldPass,
-                new_password:this.ruleForm.pass
-              })
-          ).then((res)=>{
-            if(res.data.code===0){
+          this.$axios({
+            url:"http://localhost:8080/changePassword",
+            method: 'post',
+            headers: {
+              'token': localStorage.getItem('token')
+            },
+            data: Qs.stringify({
+              oldPassword:this.ruleForm.oldPass,
+              newPassword:this.ruleForm.pass,
+            })
+          }).then((res)=>{
+            // console.log(res.data)
+            if(res.data.code===200){
               this.dialogFormVisible = false
+              this.ruleForm.oldPass = ""
+              this.ruleForm.pass = ""
+              this.ruleForm.checkPass = ""
               this.$bus.$emit("showSnackBar", "修改密码成功！")
-            } else if (res.data.code===3){
-              this.$bus.$emit("showSnackBar", "初始密码错误！")
+            } else if (res.data.code===404){
+              this.$bus.$emit("showSnackBar", res.data.errMessage)
             } else this.$notify.error(res.data.message)
-          }).catch((error)=>{
-            console.log(error)
           })
         } else {
           console.log('error submit!!');
@@ -205,9 +208,9 @@ export default {
 </script>
 
 <style scoped>
-.flexs {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+/*.flexs {*/
+/*  display: flex;*/
+/*  justify-content: space-between;*/
+/*  align-items: center;*/
+/*}*/
 </style>
