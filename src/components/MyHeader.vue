@@ -70,7 +70,10 @@ export default {
         method: 'post',
         headers: {
           'token': localStorage.getItem('token')
-        }
+        },
+        data: Qs.stringify({
+          status:"未读",
+        })
       }).then((res)=>{
         if(res.data.code===200){
           this.messages = res.data.data
