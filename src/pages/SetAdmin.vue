@@ -15,26 +15,26 @@
                 :key="member.user_id">
               <v-list-item-avatar>
                 <v-avatar>
-                  <img :src="member.avatar" alt="头像">
+                  <img :src="member.headImgUrl" alt="头像">
                 </v-avatar>
               </v-list-item-avatar>
               <v-list-item-content style="padding-left: 10px">
-                <v-list-item-title v-text="member.real_name"></v-list-item-title>
+                <v-list-item-title v-text="member.nickName"></v-list-item-title>
                 <v-list-item-subtitle v-text="member.email"></v-list-item-subtitle>
               </v-list-item-content>
               <v-spacer></v-spacer>
-              <v-btn v-show="!member.isAdmin"
+              <v-btn v-show="member.role === '用户'"
                      color="blue lighten-3"
-                     @click="handelFollow(member)"
+                     @click="changeState(member,'ROLE_ADMIN')"
                      style="min-width: 120px">
                 <v-icon>
                   mdi-account-heart
                 </v-icon>
                 设置管理员
               </v-btn>
-              <v-btn v-show="member.isAdmin"
+              <v-btn v-show="member.role === '管理员'"
                      color="orange lighten-3"
-                     @click="handleUnFollow(member)"
+                     @click="changeState(member,'ROLE_USER')"
               >
                 <v-icon>
                   mdi-account-cancel
@@ -61,10 +61,10 @@ export default {
     return {
       members: [{
         user_id: "123",
-        real_name: "吴佳锐",
-        avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+        nickName: "吴佳锐",
+        headImgUrl: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
         email:"738822360@qq.com",
-        isAdmin: false,
+        role: false,
       }, {
         user_id: "20373201",
         real_name: "蒋博文",
@@ -75,62 +75,47 @@ export default {
     }
   },
   methods: {
-    /*
-    DO: 关注/取消关注接口
-     */
-    handelFollow(member) {
-      // console.log(id)
-      this.$axios.post(
-          "http://127.0.0.1:8000/api/handle_following",
-          Qs.stringify({
-            'follower_id': localStorage.getItem('user_id'),
-            'friend_id': member.user_id
-          })
-      ).then((res) => {
-        if (res.data.code === 0) {
-          // console.log(res.data)
-          member.is_follow = 1
-          this.$message.success("你已成功关注！")
-        } else this.$notify.error(res.data.message)
-      }).catch((error) => {
-        console.log(error)
+    changeState(member,role) {
+      this.$axios({
+        url: "http://localhost:8080/superAdmin/changeUserRole",
+        method: 'post',
+        headers: {
+          'token': localStorage.getItem('token')
+        },
+        data: Qs.stringify({
+          userEmail:member.email,
+          newRole:role
+        })
+      }).then((res) => {
+        console.log(res.data)
+        if (res.data.code === 200) {
+          member.role = role === 'ROLE_ADMIN' ? '管理员':'用户';
+        } else if (res.data.code === 404) {
+          this.$bus.$emit("showSnackBar", res.data.errMessage)
+        } else this.$notify.error(res.data.errMessage)
       })
     },
-    handleUnFollow(member) {
-      this.$axios.post(
-          "http://127.0.0.1:8000/api/handle_unfollowing",
-          Qs.stringify({
-            'follower_id': localStorage.getItem('user_id'),
-            'friend_id': member.user_id
-          })
-      ).then((res) => {
-        if (res.data.code === 0) {
-          // console.log(res.data)
-          member.is_follow = 0
-          this.$message.success("你已成功取消关注！")
-        } else this.$notify.error(res.data.message)
-      }).catch((error) => {
-        console.log(error)
+    getMembers() {
+      this.$axios({
+        url: "http://localhost:8080/superAdmin/getUserList",
+        method: 'post',
+        headers: {
+          'token': localStorage.getItem('token')
+        },
+        data:''
+      }).then((res) => {
+        console.log(res.data)
+        if (res.data.code === 200) {
+          this.members = res.data.data
+        } else if (res.data.code === 404) {
+          this.$bus.$emit("showSnackBar", res.data.errMessage)
+        } else this.$notify.error(res.data.errMessage)
       })
     },
-    handlePass(id) {
-      this.$bus.$emit('handlePass', id)
-    },
-    handleFailPass(id) {
-      this.$bus.$emit('handleFailPass', id)
-    },
-    handelChangePosition(id) {
-      this.$bus.$emit('handelChangePosition', id)
-    },
-    detailOfUser(member) {
-      if (this.$router.history.current.params.id !== member.user_id) {
-        let path = "/usercenter/" + member.user_id + "/" + member.real_name;
-        this.$router.push({
-          path
-        });
-      }
-    }
   },
+  mounted () {
+    this.getMembers()
+  }
 }
 </script>
 <style>
