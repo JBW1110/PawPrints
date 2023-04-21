@@ -44,7 +44,7 @@
                 <i class="el-icon-s-check"></i>
                 职务
               </template>
-              {{ user.level === 1 ? '超级管理员' : '管理员'}}
+              {{ user.role}}
             </el-descriptions-item>
 <!--            <el-descriptions-item>-->
 <!--              <template slot="label">-->
