@@ -19,14 +19,14 @@
                 </v-avatar>
               </v-list-item-avatar>
               <v-list-item-content style="padding-left: 10px">
-                <v-list-item-title v-text="help.name"></v-list-item-title>
-                <v-list-item-subtitle v-text="help.email"></v-list-item-subtitle>
+                <v-list-item-title v-text="help.publisherName"></v-list-item-title>
+                <v-list-item-subtitle v-text="help.publisherEmail"></v-list-item-subtitle>
               </v-list-item-content>
               <v-spacer></v-spacer>
               <v-btn color="blue lighten-3"
                      @click="help.show = !help.show"
                      style="min-width: 120px"
-                     v-show="help.cate===1">
+                     v-show="help.status==='求助中'">
                 <v-icon>
                   mdi-account-heart
                 </v-icon>
@@ -35,7 +35,7 @@
               <v-btn color="orange lighten-3"
                      @click="help.show = !help.show"
                      style="min-width: 120px"
-                     v-show="help.cate===2">
+                     v-show="help.status==='处理中'">
                 <v-icon>
                   mdi-account-heart
                 </v-icon>
@@ -44,7 +44,7 @@
               <v-btn color="purple lighten-3"
                      @click="help.show = !help.show"
                      style="min-width: 120px"
-                     v-show="help.cate===3">
+                     v-show="help.status==='处理完成'">
                 <v-icon>
                   mdi-account-heart
                 </v-icon>
@@ -53,20 +53,20 @@
               <v-dialog v-model="help.show">
                 <v-card>
                   <v-card-title>
-                    <span class="headline">{{ help.name }}的求助</span>
+                    <span class="headline">{{ help.publisherName }}的求助</span>
                   </v-card-title>
-                  <v-card-subtitle style="margin-top: 10px">{{help.email}}</v-card-subtitle>
+                  <v-card-subtitle style="margin-top: 10px">{{help.publisherEmail}}</v-card-subtitle>
                   <v-card-text style="margin-top: 10px">
                     <pre>{{ help.content }}</pre>
                   </v-card-text>
-                  <v-card-actions v-show="help.cate===1">
-                    <v-btn @click="submit" style="margin-top: 20px; width: 20px" color="light-green">
+                  <v-card-actions v-show="help.status==='求助中'">
+                    <v-btn @click="changeState('处理中',help)" style="margin-top: 20px; width: 20px" color="light-green">
                       响应求助
                     </v-btn>
                   </v-card-actions>
                   <v-textarea
-                      v-show="help.cate===2"
-                      v-model="help.message"
+                      v-show="help.status==='处理中'"
+                      v-model="help.notes"
                       auto-grow
                       filled
                       clearable
@@ -76,12 +76,12 @@
                       style="width: 95%;margin-left: 30px"
                   >
                   </v-textarea>
-                  <v-card-actions v-show="help.cate===2">
-                    <v-btn @click="submit" style="margin-top: 20px; width: 20px" color="light-green">
+                  <v-card-actions v-show="help.status==='处理中'">
+                    <v-btn @click="changeState('处理完成',help)" style="margin-top: 20px; width: 20px" color="light-green">
                       完成求助
                     </v-btn>
                   </v-card-actions>
-                  <v-card-text style="margin-top: 10px" v-show="help.cate===3">
+                  <v-card-text style="margin-top: 10px" v-show="help.status==='处理完成'">
                     <pre>{{ help.message }}</pre>
                   </v-card-text>
                 </v-card>
@@ -97,6 +97,7 @@
 <script>
 import MyHeader from '@/components/MyHeader'
 import SideBar from '@/components/SideBar'
+import Qs from 'qs'
 
 export default {
   name: 'HelpManage',
@@ -106,12 +107,14 @@ export default {
       helpList:[
         {
           avatar:"../assets/白老大.png",
-          name:"蒋博文",
+          publisherName:"蒋博文",
           show:false,
           content:"我的猫在校园内走丢了",
           email:"738822360@qq.com",
-          cate:1,
+          status:"",
           message:"",
+          notes:"",
+          publisherEmail:""
         },
         {
           avatar:"../assets/白老大.png",
@@ -131,9 +134,51 @@ export default {
     }
   },
   methods: {
-    submit() {
-
+    changeState(status,help){
+      this.$axios({
+        url:"http://localhost:8080/changePostState",
+        method: 'post',
+        headers: {
+          'token': localStorage.getItem('token')
+        },
+        data: Qs.stringify({
+          postId:help.id,
+          newStatus:status,
+          notes:help.notes
+        })
+      }).then((res)=>{
+        console.log(res.data)
+        if(res.data.code===200){
+          help.status = status
+          help.show = false
+          this.$message.success("状态变成"+status);
+        } else if (res.data.code===404){
+          this.$bus.$emit("showSnackBar", res.data.errMessage)
+        } else this.$notify.error(res.data.errMessage)
+      })
+    },
+    getHelpList(){
+      this.$axios({
+        url:"http://localhost:8080/post/search",
+        method: 'post',
+        headers: {
+          'token': localStorage.getItem('token')
+        },
+        data: Qs.stringify({
+          type:'求助'
+        })
+      }).then((res)=>{
+        console.log(res.data)
+        if(res.data.code===200){
+          this.helpList = res.data.data
+        } else if (res.data.code===404){
+          this.$bus.$emit("showSnackBar", res.data.errMessage)
+        } else this.$notify.error(res.data.message)
+      })
     }
+  },
+  mounted () {
+    this.getHelpList()
   }
 }
 </script>
