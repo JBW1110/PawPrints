@@ -4,16 +4,17 @@
       <v-list subheader>
         <v-list-item
             v-for="member in members"
-            :key="member.user_id">
+            :key="member.archiveID"
+            v-show="member.status === '申请中'">
           <v-list-item-avatar>
             <v-avatar>
-              <img :src="member.avatar" alt="头像">
+              <img :src="member.applicantAvatarUrl" alt="头像">
             </v-avatar>
           </v-list-item-avatar>
           <v-list-item-content style="padding-left: 10px">
-            <v-list-item-title v-text="member.real_name"></v-list-item-title>
+            <v-list-item-title v-text="member.applicantNickname"></v-list-item-title>
             <v-list-item-subtitle class="text--primary" v-text="member.email"></v-list-item-subtitle>
-            <v-list-item-subtitle v-text="member.address"></v-list-item-subtitle>
+<!--            <v-list-item-subtitle v-text="member.address"></v-list-item-subtitle>-->
           </v-list-item-content>
           <v-spacer></v-spacer>
           <v-btn color="blue lighten-3"
@@ -27,13 +28,13 @@
           <v-dialog v-model="member.show">
             <v-card>
               <v-card-title>
-                <span class="headline">申请领养白老大</span>
+                <span class="headline">{{member.applicantNickname}}申请领养{{member.animalName}}</span>
               </v-card-title>
               <v-card-text style="margin-top: 20px">
-                <pre>{{ member.content }}</pre>
+                <pre>{{ member.reason }}</pre>
               </v-card-text>
               <v-textarea
-                  v-model="member.reason"
+                  v-model="member.notes"
                   auto-grow
                   filled
                   clearable
@@ -44,10 +45,10 @@
               >
               </v-textarea>
               <v-card-actions>
-                <v-btn @click="submit" style="margin-top: 20px;float: left;width: 20px" color="light-green">
+                <v-btn @click="changeState(member,'已通过')" style="margin-top: 20px;float: left;width: 20px" color="light-green">
                   通过
                 </v-btn>
-                <v-btn @click="submit" style="margin-top: 20px;float: left;width: 20px" color="red">
+                <v-btn @click="changeState(member,'未通过')" style="margin-top: 20px;float: left;width: 20px" color="red">
                   拒绝
                 </v-btn>
               </v-card-actions>
@@ -60,16 +61,20 @@
 </template>
 
 <script>
+import Qs from 'qs'
+
 export default {
   name: 'AdoptionApproval',
   data() {
     return {
       members: [{
         user_id: "123",
-        real_name: "吴佳锐",
+        applicantNickname: "吴佳锐",
+        animalName:"",
+        applicantAvatarUrl: "",
         avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
         email:"738822360@qq.com",
-        content:"家庭认养最好选择知根知底的家庭或者朋友介绍的家庭，清楚猫的来源，这样对猫的了解会更多。\n" +
+        reason:"家庭认养最好选择知根知底的家庭或者朋友介绍的家庭，清楚猫的来源，这样对猫的了解会更多。\n" +
             "\n" +
             "人与猫之间也存在缘分，在决定认养前，先去繁育者的家中和猫做一个简单的接触，以免猫从一开始就对认养人产生抗拒。\n" +
             "\n" +
@@ -82,7 +87,7 @@ export default {
             "有的家庭认养轻松又简单，有的则是烦琐又复杂，需要你根据自身的情况和繁育者的要求，权衡之后再决定是否认养幼猫。",
         show: false,
         address:"北京航空航天大学",
-        reason:"",
+        notes:"",
       }, {
         user_id: "20373201",
         real_name: "蒋博文",
@@ -94,6 +99,55 @@ export default {
       }]
     }
   },
+  methods: {
+    changeState(member, status) {
+      this.$axios({
+        url: "http://localhost:8080/admin/update/application",
+        method: 'post',
+        headers: {
+          'token': localStorage.getItem('token')
+        },
+        data: Qs.stringify({
+          archiveId: member.archiveId,
+          applicantEmail: member.email,
+          status: status,
+          notes: member.notes
+        })
+      }).then((res) => {
+        // console.log(res.data)
+        if (res.data.code === 200) {
+          member.adoptState = status
+          member.show = false
+          member.notes = ''
+          this.members = this.members.filter((m) => {
+            return m.archiveId !== member.archiveId
+          })
+          this.$message.success("状态变成" + status);
+        } else if (res.data.code === 404) {
+          this.$bus.$emit("showSnackBar", res.data.errMessage)
+        } else this.$notify.error(res.data.errMessage)
+      })
+    },
+    getMemberList () {
+      this.$axios({
+        url: "http://localhost:8080/admin/query/application",
+        method: 'post',
+        headers: {
+          'token': localStorage.getItem('token')
+        },
+      }).then((res) => {
+        // console.log(res.data)
+        if (res.data.code === 200) {
+          this.members = res.data.data
+        } else if (res.data.code === 404) {
+          this.$bus.$emit("showSnackBar", res.data.errMessage)
+        } else this.$notify.error(res.data.message)
+      })
+    },
+  },
+  mounted () {
+    this.getMemberList()
+  }
 }
 </script>
 
