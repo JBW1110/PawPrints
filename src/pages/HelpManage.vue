@@ -15,7 +15,7 @@
                 :key="help.name">
               <v-list-item-avatar>
                 <v-avatar>
-                  <img src="../assets/白老大.png" alt="头像">
+                  <img :src="help.publisherAvatarUrl" alt="头像">
                 </v-avatar>
               </v-list-item-avatar>
               <v-list-item-content style="padding-left: 10px">
@@ -147,7 +147,7 @@ export default {
           notes:help.notes
         })
       }).then((res)=>{
-        console.log(res.data)
+        // console.log(res.data)
         if(res.data.code===200){
           help.status = status
           help.show = false
@@ -168,7 +168,7 @@ export default {
           type:'求助'
         })
       }).then((res)=>{
-        console.log(res.data)
+        // console.log(res.data)
         if(res.data.code===200){
           this.helpList = res.data.data
         } else if (res.data.code===404){
