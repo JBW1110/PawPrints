@@ -1,30 +1,30 @@
 <template>
   <v-app>
     <div class="files-container" style="margin-top: 10px">
-      <div class="fileBar" v-for="file in fileList" :key="file.data" @click="file.show = !file.show">
-        <div><img src="../assets/白老大.png" alt="动物照片" class="file_picture"></div>
-        <div class="file_name">{{ file.name }}</div>
+      <div class="fileBar" v-for="file in fileList" :key="file.data">
+        <div @click="file.show = !file.show"><img :src="file.urls[0]" alt="动物照片" class="file_picture"></div>
+        <div class="file_name" @click="file.show = !file.show">{{ file.nickname }}</div>
         <div class="file_delete">
-          <v-btn elevation="10" icon color="red" @click="deletefile(file)"
+          <v-btn elevation="10" icon color="red" @click="deleteFile(file.archiveId)"
                  style="margin-right: 5px">
             <i class="el-icon-close" style="font-size: 30px;"></i>
           </v-btn>
         </div>
-        <div style="margin-top: 100px">品种：{{file.type}}<br/>性格：{{file.character}}</div>
+        <div style="margin-top: 100px">品种：{{file.category}}<br/>绝育状态：{{file.tnrState==='是'?'已绝育':(file.tnrState==='否'?'未绝育':'未知')}}</div>
         <v-dialog v-model="file.show" width="600px">
           <v-card  style="border: solid #ACC0D8 5px;">
-            <div style="margin-left: 150px"><img src="../assets/白老大.png" alt="动物照片" style="height: 300px;width: 300px"></div>
+            <div style="margin-left: 150px"><img :src="file.urls[0]" alt="动物照片" style="height: 300px;width: 300px"></div>
             <v-card-title style="text-align: center">
-              <span class="headline">{{ file.name }}</span>
+              <span class="headline">{{ file.nickname }}</span>
             </v-card-title>
             <div class="link-top"></div>
             <v-card-text style="margin-top: 20px">
-              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">种类：{{ file.type }}</pre>
-              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">性格：{{ file.character }}</pre>
-              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">体重：{{ file.weight }}</pre>
-              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">绝育状态：{{ file.status }}</pre>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">种类：{{ file.category }}</pre>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">绝育状态：{{file.tnrState==='是'?'已绝育':(file.tnrState==='否'?'未绝育':'未知')}}</pre>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">体重：{{ file.weight }}kg</pre>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">领养状态：{{ file.adoptState }}</pre>
               <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">描述：{{file.description}}</pre>
-              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">出没位置：{{file.location}}</pre>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">出没位置：{{file.appearLocation}}</pre>
             </v-card-text>
           </v-card>
         </v-dialog>
@@ -34,24 +34,72 @@
 </template>
 
 <script>
+
+import Qs from 'qs'
+
 export default {
   name: 'FileView',
   data() {
     return{
       fileList:[
         {
+          urls:[],
+          archiveId:"",
           avatar:"../assets/白老大.png",
-          type:"奶牛",
-          name:"白老大",
+          category:"奶牛",
+          nickname:"白老大",
           weight:"4kg",
           description:"跟皮皮猫长得有点像，花纹是黑白的，快递站干饭常客",
-          location:"快递站",
-          status:"已绝育",
-          character:"怕人 安全距离1m以外",
+          appearLocation:"快递站",
+          tnrState:"",
+          adoptState:"怕人 安全距离1m以外",
           show:false,
         }
       ]
     }
+  },
+  methods: {
+    getFileList () {
+      this.$axios({
+        url: "http://localhost:8080/query/archiveList",
+        method: 'post',
+        headers: {
+          'token': localStorage.getItem('token')
+        },
+      }).then((res) => {
+        console.log(res.data)
+        if (res.data.code === 200) {
+          this.fileList = res.data.data
+        } else if (res.data.code === 404) {
+          this.$bus.$emit("showSnackBar", res.data.errMessage)
+        } else this.$notify.error(res.data.errMessage)
+      })
+    },
+    deleteFile(id){
+      this.$axios({
+        url:"http://localhost:8080/deleteArchive",
+        method: 'post',
+        headers: {
+          'token': localStorage.getItem('token')
+        },
+        data: Qs.stringify({
+          archiveId: id
+        })
+      }).then((res)=>{
+        // console.log(res.data)
+        if(res.data.code===200){
+          this.$message.success("删除档案成功");
+          this.fileList = this.fileList.filter((file) => {
+            return file.archiveId !== id
+          })
+        } else if (res.data.code===404){
+          this.$bus.$emit("showSnackBar", res.data.errMessage)
+        } else this.$notify.error(res.data.message)
+      })
+    }
+  },
+  mounted () {
+    this.getFileList()
   }
 }
 </script>

@@ -8,11 +8,12 @@
           <el-form-item>
             <el-upload
                 :auto-upload="true"
-                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
                 :limit=1
                 multiple
                 accept=".png,.jpg,.jepg"
-                action="http://127.0.0.1:8000/upload/img"
+                action
+                :http-request="uploadPic"
                 list-type="picture-card"
                 ref="upload"
                 style="margin-bottom: 20px">
@@ -44,28 +45,28 @@
             </el-dialog>
           </el-form-item>
           <el-form-item prop="name">
-            <el-input v-model="createFileForm.name" class="form__input" type="text" placeholder="昵称"/>
+            <el-input v-model="createFileForm.nickname" class="form__input" type="text" placeholder="昵称"/>
           </el-form-item>
           <el-form-item prop="type">
-            <el-input v-model="createFileForm.type" class="form__input" type="text" placeholder="种类"/>
+            <el-input v-model="createFileForm.category" class="form__input" type="text" placeholder="种类"/>
           </el-form-item>
-          <el-form-item prop="character">
-            <el-input v-model="createFileForm.character" class="form__input" type="text" placeholder="性格"/>
-          </el-form-item>
+<!--          <el-form-item prop="character">-->
+<!--            <el-input v-model="createFileForm.character" class="form__input" type="text" placeholder="性格"/>-->
+<!--          </el-form-item>-->
           <el-form-item prop="weight">
             <el-input v-model="createFileForm.weight" class="form__input" type="text" placeholder="体重"/>
           </el-form-item>
           <el-form-item prop="status">
-            <el-select v-model="createFileForm.status" class="form__input" placeholder="绝育状态" style="display: block;">
-              <el-option label="已绝育" value="已绝育"></el-option>
-              <el-option label="未绝育" value="未绝育"></el-option>
+            <el-select v-model="createFileForm.tnrState" class="form__input" placeholder="绝育状态" style="display: block;">
+              <el-option label="已绝育" value="是"></el-option>
+              <el-option label="未绝育" value="否"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item prop="description">
             <el-input v-model="createFileForm.description" class="form__input" type="text" placeholder="描述"/>
           </el-form-item>
           <el-form-item prop="location">
-            <el-input v-model="createFileForm.location" class="form__input" type="text" placeholder="出没位置"/>
+            <el-input v-model="createFileForm.appearLocation" class="form__input" type="text" placeholder="出没位置"/>
           </el-form-item>
           <el-form-item>
             <div class="primary-btn" @click="create">添加档案</div>
@@ -77,6 +78,8 @@
 </template>
 
 <script>
+// import Qs from 'qs'
+
 export default {
   name: 'FileAdd',
   data() {
@@ -86,19 +89,77 @@ export default {
       disabled: false,
       createFileForm: {
         imageUrl: '',
-        type:"",
-        name:"",
+        category:"",
+        nickname:"",
         weight:"",
         description:"",
-        location:"",
-        status:"",
+        appearLocation:"",
+        tnrState:"",
+        adoptState:"不可领养",
         character:"",
+        urls:["http://localhost:8080/createArchive"]
+      },
+      newForm: {
+        category:"",
+        nickname:"",
+        weight:"",
+        description:"",
+        appearLocation:"",
+        tnrState:"",
+        adoptState:"不可领养",
+        urls:[""]
       },
     }
   },
   methods: {
     create(){
-
+      let FormDatas = new FormData()
+      FormDatas.append('category',this.createFileForm.category);
+      FormDatas.append('nickname',this.createFileForm.nickname);
+      FormDatas.append('weight',this.createFileForm.weight);
+      FormDatas.append('description',this.createFileForm.description);
+      FormDatas.append('appearLocation',this.createFileForm.appearLocation);
+      FormDatas.append('tnrState',this.createFileForm.tnrState);
+      FormDatas.append('adoptState',this.createFileForm.adoptState);
+      FormDatas.append('urls',this.createFileForm.urls);
+      this.$axios({
+        url: "http://localhost:8080/createArchive/urls",
+        method: 'post',
+        headers: {
+          'token': localStorage.getItem('token'),
+          // 'content-type':'multipart/form-data'
+        },
+        data: FormDatas
+      }).then((res) => {
+        // console.log(res.data)
+        if (res.data.code === 200) {
+          this.$refs.upload.clearFiles();
+          this.$message.success("添加档案成功");
+          this.createFileForm = this.newForm
+        } else if (res.data.code === 404) {
+          this.$bus.$emit("showSnackBar", res.data.errMessage)
+        } else this.$notify.error(res.data.errMessage)
+      })
+    },
+    uploadPic(item){
+      let FormDatas = new FormData()
+      FormDatas.append('file',item.file);
+      this.$axios({
+        url: "http://localhost:8080/upload/file/post/temp",
+        method: 'post',
+        headers: {
+          'token': localStorage.getItem('token'),
+          'content-type':'multipart/form-data'
+        },
+        data: FormDatas
+      }).then((res) => {
+        // console.log(res.data)
+        if (res.data.code === 200) {
+          this.createFileForm.urls[0] = res.data.data
+        } else if (res.data.code === 404) {
+          this.$bus.$emit("showSnackBar", res.data.errMessage)
+        } else this.$notify.error(res.data.errMessage)
+      })
     },
     //清除图片缓存
     handleRemove(file) {
@@ -110,13 +171,8 @@ export default {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
-    handleAvatarSuccess(res) {
-      if (res.code !== 0) {
-        this.$message.error(res.message)
-        return false
-      }
-      this.createFileForm.imageUrl = res.image_path
-      // this.$message.success('上传成功')
+    beforeAvatarUpload() {
+      return true;
     },
   }
 }
