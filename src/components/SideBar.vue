@@ -16,7 +16,7 @@
         <i class="el-icon-document"></i>
         <span slot="title">帖子管理</span>
       </el-menu-item>
-      <el-menu-item index="/setadmin" router>
+      <el-menu-item index="/setadmin" router v-show="role==='超级管理员'">
         <i class="el-icon-user"></i>
         <span slot="title">新增管理</span>
       </el-menu-item>
@@ -28,10 +28,10 @@
         <i class="el-icon-phone-outline"></i>
         <span slot="title">求助管理</span>
       </el-menu-item>
-      <el-menu-item index="/mainpage" router>
-        <i class="el-icon-location-information"></i>
-        <span slot="title">智能追踪</span>
-      </el-menu-item>
+<!--      <el-menu-item index="/mainpage" router>-->
+<!--        <i class="el-icon-location-information"></i>-->
+<!--        <span slot="title">智能追踪</span>-->
+<!--      </el-menu-item>-->
       <el-menu-item index="/usercenter" router>
         <i class="el-icon-user-solid"></i>
         <span slot="title">个人中心</span>
@@ -49,25 +49,24 @@ export default {
   data() {
     return {
       isCollapse: true,
-      admin_id: "20373021",
-      admin_name: "蒋博文",
+      role:""
     };
   },
   methods: {
-    // getAdminInformation(){
-    //   this.$axios.post(
-    //       "http://127.0.0.1:8000/api/get_admin_information",
-    //       Qs.stringify({
-    //         'admin_id':localStorage.getItem('user_id')
-    //       })
-    //   ).then((res)=>{
-    //     if(res.data.code===0){
-    //
-    //     } else this.$notify.error(res.data.message)
-    //   }).catch((error)=>{
-    //     console.log(error)
-    //   })
-    // },
+    getUserInformation(){
+      this.$axios({
+        url:"http://localhost:8080/user/info",
+        method: 'post',
+        headers: {
+          'token':localStorage.getItem('token'),
+        }
+      }).then((res) => {
+        // console.log(res.data)
+        if (res.data.code === 200) {
+          this.role = res.data.data.role
+        } else this.$notify.error(res.data.message)
+      })
+    },
     mouseOver() {
       this.isCollapse = false
     },
@@ -75,6 +74,9 @@ export default {
       this.isCollapse = true
     }
   },
+  mounted () {
+    this.getUserInformation()
+  }
 }
 </script>
 <style>

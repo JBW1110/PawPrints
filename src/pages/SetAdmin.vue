@@ -35,6 +35,7 @@
               <v-btn v-show="member.role === '管理员'"
                      color="orange lighten-3"
                      @click="changeState(member,'ROLE_USER')"
+                     style="min-width: 120px"
               >
                 <v-icon>
                   mdi-account-cancel
@@ -87,7 +88,7 @@ export default {
           newRole:role
         })
       }).then((res) => {
-        console.log(res.data)
+        // console.log(res.data)
         if (res.data.code === 200) {
           member.role = role === 'ROLE_ADMIN' ? '管理员':'用户';
         } else if (res.data.code === 404) {
@@ -104,7 +105,7 @@ export default {
         },
         data:''
       }).then((res) => {
-        console.log(res.data)
+        // console.log(res.data)
         if (res.data.code === 200) {
           this.members = res.data.data
         } else if (res.data.code === 404) {
