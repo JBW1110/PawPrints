@@ -161,7 +161,7 @@ export default {
   width: 100%;
   min-width: 1000px;
   min-height: 300px;
-  height: 1000px;
+  height: 750px;
   background-color: #ecf0f3;
   box-shadow: 10px 10px 10px #c3d5f3, -10px -10px 10px #f9f9f9;
   border-radius: 12px;

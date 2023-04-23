@@ -7,7 +7,7 @@
             :key="file.name">
           <v-list-item-avatar>
             <v-avatar>
-              <img src="../assets/白老大.png" alt="头像">
+              <img :src="file.urls[0]" alt="头像">
             </v-avatar>
           </v-list-item-avatar>
           <v-list-item-content style="padding-left: 10px">
@@ -109,7 +109,7 @@ export default {
           'token': localStorage.getItem('token')
         },
       }).then((res) => {
-        // console.log(res.data)
+        console.log(res.data)
         if (res.data.code === 200) {
           this.fileList = res.data.data
         } else if (res.data.code === 404) {
