@@ -136,6 +136,9 @@ export default {
           this.$refs.upload.clearFiles();
           this.$message.success("添加档案成功");
           this.createFileForm = this.newForm
+          let NewPage = "_empty" + "?time=" + new Date().getTime() / 500;
+          this.$router.push(NewPage);
+          this.$router.go(-1);
         } else if (res.data.code === 404) {
           this.$bus.$emit("showSnackBar", res.data.errMessage)
         } else this.$notify.error(res.data.errMessage)

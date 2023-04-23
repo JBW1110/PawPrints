@@ -106,6 +106,9 @@ export default {
           this.$message.success("新建帖子成功");
           this.createPostForm = this.newForm
           this.$refs.upload.clearFiles();
+          let NewPage = "_empty" + "?time=" + new Date().getTime() / 500;
+          this.$router.push(NewPage);
+          this.$router.go(-1);
         } else if (res.data.code === 404) {
           this.$bus.$emit("showSnackBar", res.data.errMessage)
         } else this.$notify.error(res.data.errMessage)
