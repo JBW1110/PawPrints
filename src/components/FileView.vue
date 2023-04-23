@@ -19,13 +19,33 @@
             </v-card-title>
             <div class="link-top"></div>
             <v-card-text style="margin-top: 20px">
-              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">种类：{{ file.category }}</pre>
-              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">绝育状态：{{file.tnrState==='是'?'已绝育':(file.tnrState==='否'?'未绝育':'未知')}}</pre>
-              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">体重：{{ file.weight }}kg</pre>
-              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">领养状态：{{ file.adoptState }}</pre>
-              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">描述：{{file.description}}</pre>
-              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">出没位置：{{file.appearLocation}}</pre>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="!isEdit">种类：{{ file.category }}</pre>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="isEdit">种类：</pre>
+              <el-input style="margin-bottom: 10px" size="mini" v-model="file.category" v-show="isEdit"></el-input>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="!isEdit">绝育状态：{{file.tnrState==='是'?'已绝育':(file.tnrState==='否'?'未绝育':'未知')}}</pre>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="isEdit">绝育状态：</pre>
+              <el-select style="margin-bottom: 10px" size="mini" v-model="file.tnrState" v-show="isEdit">
+                <el-option label="已绝育" value="是"></el-option>
+                <el-option label="未绝育" value="否"></el-option>
+              </el-select>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="!isEdit">体重：{{ file.weight }}kg</pre>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="isEdit">体重：</pre>
+              <el-input style="margin-bottom: 10px" size="mini" v-model="file.weight" v-show="isEdit"></el-input>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="!isEdit">领养状态：{{ file.adoptState }}</pre>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="isEdit">领养状态：</pre>
+              <el-input style="margin-bottom: 10px" size="mini" v-model="file.adoptState" v-show="isEdit"></el-input>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="!isEdit">描述：{{file.description}}</pre>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="isEdit">描述：</pre>
+              <el-input style="margin-bottom: 10px" size="mini" v-model="file.description" v-show="isEdit"></el-input>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="!isEdit">出没位置：{{file.appearLocation}}</pre>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="isEdit">出没位置：</pre>
+              <el-input style="margin-bottom: 10px" size="mini" v-model="file.appearLocation" v-show="isEdit"></el-input>
             </v-card-text>
+            <div class="link-top"></div>
+            <div style="margin: 10px">
+              <v-btn style="margin-left: 10px" color="light-green" @click="submitChangeInfo(file)">{{ mode }}</v-btn>
+              <v-btn style="margin-left: 400px" color="light-green" v-show="isEdit" @click="isEdit = !isEdit">取消</v-btn>
+            </div>
           </v-card>
         </v-dialog>
       </div>
@@ -41,6 +61,7 @@ export default {
   name: 'FileView',
   data() {
     return{
+      isEdit: false,
       fileList:[
         {
           urls:[],
@@ -59,6 +80,23 @@ export default {
     }
   },
   methods: {
+    submitChangeInfo(file) {
+      if (this.isEdit) {
+        this.$axios({
+          url:"http://localhost:8080/updateArchive",
+          method: 'post',
+          headers: {
+            'token': localStorage.getItem('token')
+          },
+          data: Qs.stringify(file)
+        }).then((res) => {
+          if (res.data.code === 200) {
+            this.$message.success("你已成功修改信息！")
+          } else this.$notify.error(res.data.message)
+        })
+      }
+      this.isEdit = !this.isEdit
+    },
     getFileList () {
       this.$axios({
         url: "http://localhost:8080/query/archiveList",
@@ -96,6 +134,15 @@ export default {
           this.$bus.$emit("showSnackBar", res.data.errMessage)
         } else this.$notify.error(res.data.message)
       })
+    }
+  },
+  computed: {
+    mode() {
+      if (this.isEdit) {
+        return "提交"
+      } else {
+        return "编辑"
+      }
     }
   },
   mounted () {
