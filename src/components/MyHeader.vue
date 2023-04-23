@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flexs">
-      <h1>上午好，{{ adminName }}</h1>
+      <h1>{{noonTip}}</h1>
       <el-badge :value="messages.length" :hidden="hidden" v-show="messages.length!==0">
         <el-button circle @click="quit" icon="el-icon-switch-button"></el-button>
         <el-button @click="drawer=true" circle icon="el-icon-message-solid"></el-button>
@@ -43,6 +43,7 @@ export default {
   name: "MyHeader",
   data() {
     return {
+      noonTip:"",
       adminName: "蒋博文",
       hidden: false,
       messageCount: 12,
@@ -63,6 +64,16 @@ export default {
         path
       });
       localStorage.clear()
+    },
+    myNoonTip() {
+      const date = new Date()
+      if (date.getHours() >= 0 && date.getHours() < 12) {
+        this.noonTip = '上午好'
+      } else if (date.getHours() >= 12 && date.getHours() < 18) {
+        this.noonTip = '下午好'
+      } else {
+        this.noonTip = '晚上好'
+      }
     },
     getMessages() {
       this.$axios({
@@ -121,6 +132,9 @@ export default {
   },
   mounted () {
     this.getMessages();
+  },
+  created () {
+    this.myNoonTip()
   }
 }
 </script>
