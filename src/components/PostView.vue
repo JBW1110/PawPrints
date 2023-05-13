@@ -28,17 +28,17 @@
             <i class="el-icon-close" style="font-size: 30px;"></i>
           </v-btn>
         </div>
-        <div style="float:right;margin-right: 50px;margin-top: 70px">
-          <v-row>
-            <v-btn icon color="deep-orange" @click="thumbUp(post)" v-show="post.hasThumbed">
-              <svg-icon type="mdi" :path="pathUp"></svg-icon>
-            </v-btn>
-            <v-btn icon @click="thumbUp(post)" v-show="!post.hasThumbed">
-              <svg-icon type="mdi" :path="pathUp"></svg-icon>
-            </v-btn>
-            <div style="margin-top: 5px">{{ post.thumbNum }}</div>
-          </v-row>
-        </div>
+<!--        <div style="float:right;margin-right: 50px;margin-top: 70px">-->
+<!--          <v-row>-->
+<!--            <v-btn icon color="deep-orange" @click="thumbUp(post)" v-show="post.hasThumbed">-->
+<!--              <svg-icon type="mdi" :path="pathUp"></svg-icon>-->
+<!--            </v-btn>-->
+<!--            <v-btn icon @click="thumbUp(post)" v-show="!post.hasThumbed">-->
+<!--              <svg-icon type="mdi" :path="pathUp"></svg-icon>-->
+<!--            </v-btn>-->
+<!--            <div style="margin-top: 5px">{{ post.thumbNum }}</div>-->
+<!--          </v-row>-->
+<!--        </div>-->
         <v-dialog v-model="post.show">
           <v-card>
             <v-col>
@@ -48,15 +48,15 @@
                 <v-card-subtitle>
                   <span>{{ post.publisherName }} {{ post.publisherEmail }}</span>
                 </v-card-subtitle>
-              <v-row style="float: right;margin-right: 20px">
-                <v-btn icon color="deep-orange" @click="thumbUp(post)" v-show="post.hasThumbed">
-                  <svg-icon type="mdi" :path="pathUp"></svg-icon>
-                </v-btn>
-                <v-btn icon @click="thumbUp(post)" v-show="!post.hasThumbed">
-                  <svg-icon type="mdi" :path="pathUp"></svg-icon>
-                </v-btn>
-                <div style="margin-top: 5px">{{ post.thumbNum }}</div>
-              </v-row>
+<!--              <v-row style="float: right;margin-right: 20px">-->
+<!--                <v-btn icon color="deep-orange" @click="thumbUp(post)" v-show="post.hasThumbed">-->
+<!--                  <svg-icon type="mdi" :path="pathUp"></svg-icon>-->
+<!--                </v-btn>-->
+<!--                <v-btn icon @click="thumbUp(post)" v-show="!post.hasThumbed">-->
+<!--                  <svg-icon type="mdi" :path="pathUp"></svg-icon>-->
+<!--                </v-btn>-->
+<!--                <div style="margin-top: 5px">{{ post.thumbNum }}</div>-->
+<!--              </v-row>-->
             </v-col>
             <v-card-text style="margin-top: 20px">
               <pre>{{ post.content }}</pre>
@@ -87,24 +87,24 @@
                   <pre v-html="comment.content" style="margin-left: 10px"></pre>
                 </v-card>
               </v-list-item>
-              <v-card-text style="margin-top: 30px">参与讨论：</v-card-text>
+<!--              <v-card-text style="margin-top: 30px">参与讨论：</v-card-text>-->
             </v-list>
-            <v-textarea
-                v-model="post.comment"
-                auto-grow
-                filled
-                clearable
-                color="deep-purple"
-                label="请输入评论内容"
-                rows="1"
-                style="width: 95%;margin-left: 30px"
-            >
-            </v-textarea>
-            <v-card-actions>
-              <v-btn @click="makeComment(post)" style="margin-top: 20px;float: left;width: 20px" color="primary">
-                评论
-              </v-btn>
-            </v-card-actions>
+<!--            <v-textarea-->
+<!--                v-model="post.comment"-->
+<!--                auto-grow-->
+<!--                filled-->
+<!--                clearable-->
+<!--                color="deep-purple"-->
+<!--                label="请输入评论内容"-->
+<!--                rows="1"-->
+<!--                style="width: 95%;margin-left: 30px"-->
+<!--            >-->
+<!--            </v-textarea>-->
+<!--            <v-card-actions>-->
+<!--              <v-btn @click="makeComment(post)" style="margin-top: 20px;float: left;width: 20px" color="primary">-->
+<!--                评论-->
+<!--              </v-btn>-->
+<!--            </v-card-actions>-->
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="green darken-1" text @click="post.show = false">关闭</v-btn>
@@ -118,12 +118,12 @@
 
 <script>
 import Qs from 'qs'
-import SvgIcon from '@jamescoyle/vue-icon'
+// import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiThumbUp } from '@mdi/js'
 
 export default {
   name: 'PostView',
-  components:{SvgIcon},
+  // components:{SvgIcon},
   data(){
     return{
       pathUp:mdiThumbUp,
