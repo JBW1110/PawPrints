@@ -21,11 +21,11 @@
               <v-btn @click="changeState('审核通过',post)" style="margin-top: 20px;float: left;width: 20px" color="light-green">
                 通过
               </v-btn>
-              <v-btn @click="post.show2 = !post.show2" style="margin-top: 20px;float: left;width: 20px" color="red">
+              <v-btn @click="post.showReject = !post.showReject" style="margin-top: 20px;float: left;width: 20px" color="red">
                 拒绝
               </v-btn>
             </v-card-actions>
-            <v-dialog v-model="post.show2" max-width="500">
+            <v-dialog v-model="post.showReject" max-width="500">
               <v-card style="width: 500px">
                 <v-card-title>
                   <span class="headline">拒绝处理</span>
@@ -74,7 +74,7 @@ export default {
         cover: "",
         name: "",
         show: false,
-        show2: false,
+        showReject: false,
         like: 5,
         dislike: 2,
         newComment:{
@@ -107,7 +107,7 @@ export default {
         })
       }).then((res)=>{
         if(res.data.code===200){
-          // console.log(res.data.data)
+          console.log(res.data.data)
           this.postList = res.data.data
         } else if (res.data.code===404){
           this.$bus.$emit("showSnackBar", res.data.errMessage)
