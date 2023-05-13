@@ -59,6 +59,13 @@
 <!--              </v-row>-->
             </v-col>
             <v-card-text style="margin-top: 20px">
+              <div class="img_show">
+                <el-carousel :interval="4000" type="card" height="500px" indicator-position="outside">
+                  <el-carousel-item v-for="pic in post.postImgUrls" :key="pic">
+                    <img :src="pic" class="img" width="100%" height="100%">
+                  </el-carousel-item>
+                </el-carousel>
+              </div>
               <pre style="white-space:pre-wrap">{{ post.content }}</pre>
             </v-card-text>
             <v-list>
@@ -324,5 +331,14 @@ export default {
   margin-right: 10px;
   height: 45px;
   float: right;
+}
+.img_show{
+  /*background-color: dimgrey;*/
+  padding-top: 50px;
+  width: 70%;
+  margin-left: 15%;
+}
+.img{
+  align-content: center;
 }
 </style>
