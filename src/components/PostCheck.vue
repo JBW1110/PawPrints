@@ -17,24 +17,37 @@
             <v-card-text style="margin-top: 20px">
               <pre>{{ post.content }}</pre>
             </v-card-text>
-            <v-textarea
-                v-model="post.notes"
-                auto-grow
-                filled
-                clearable
-                color="deep-purple"
-                label="请输入审核理由"
-                rows="1"
-            >
-            </v-textarea>
             <v-card-actions>
               <v-btn @click="changeState('审核通过',post)" style="margin-top: 20px;float: left;width: 20px" color="light-green">
                 通过
               </v-btn>
-              <v-btn @click="changeState('审核未通过',post)" style="margin-top: 20px;float: left;width: 20px" color="red">
+              <v-btn @click="post.show2 = !post.show2" style="margin-top: 20px;float: left;width: 20px" color="red">
                 拒绝
               </v-btn>
             </v-card-actions>
+            <v-dialog v-model="post.show2" max-width="500">
+              <v-card style="width: 500px">
+                <v-card-title>
+                  <span class="headline">拒绝处理</span>
+                </v-card-title>
+                <v-textarea
+                    v-model="post.notes"
+                    auto-grow
+                    filled
+                    clearable
+                    color="deep-purple"
+                    label="请输入拒绝理由"
+                    rows="1"
+                    style="margin-top: 20px;margin-left: 5px;margin-right: 5px"
+                >
+                </v-textarea>
+                <v-card-actions>
+                  <v-btn @click="changeState('审核未通过',post)" style="margin-top: 20px;float: left;width: 20px" color="light-green">
+                    提交
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="green darken-1" text @click="post.show = false">关闭</v-btn>
@@ -61,6 +74,7 @@ export default {
         cover: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
         name: "测试帖",
         show: false,
+        show2: false,
         like: 5,
         dislike: 2,
         newComment:{
