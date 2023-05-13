@@ -65,7 +65,7 @@
                     </v-btn>
                   </v-card-actions>
                   <v-textarea
-                      v-show="help.status==='处理中'"
+                      v-show="help.status==='处理中' && role==='超级管理员'"
                       v-model="help.notes"
                       auto-grow
                       filled
@@ -76,7 +76,7 @@
                       style="width: 95%;margin-left: 30px"
                   >
                   </v-textarea>
-                  <v-card-actions v-show="help.status==='处理中'">
+                  <v-card-actions v-show="help.status==='处理中' && role==='超级管理员'">
                     <v-btn @click="changeState('处理完成',help)" style="margin-top: 20px; width: 20px" color="light-green">
                       完成求助
                     </v-btn>
@@ -104,6 +104,7 @@ export default {
   components: {MyHeader,SideBar},
   data() {
     return {
+      role:"",
       helpList:[
         {
           avatar:"",
@@ -161,10 +162,27 @@ export default {
           this.$bus.$emit("showSnackBar", res.data.errMessage)
         } else this.$notify.error(res.data.message)
       })
-    }
+    },
+    getUserInformation: function () {
+      this.$axios({
+        url:"https://anitu1.2022martu1.cn:8443/user/info",
+        method: 'post',
+        headers: {
+          'token':localStorage.getItem('token'),
+          // 'content-type':'multipart/form-data'
+        }
+      }).then((res) => {
+        // console.log(res.data)
+        if (res.data.code === 200) {
+          // console.log(res.data)
+          this.role = res.data.data.role
+        } else this.$notify.error(res.data.message)
+      })
+    },
   },
   mounted () {
     this.getHelpList()
+    this.getUserInformation()
   },
   created () {
     if(localStorage.getItem('token') == null){
