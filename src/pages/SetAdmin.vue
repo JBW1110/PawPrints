@@ -42,6 +42,16 @@
                 </v-icon>
                 取消管理员
               </v-btn>
+              <v-btn v-show="member.role === '访客'"
+                     color="purple lighten-3"
+                     @click="changeState(member,'ROLE_USER')"
+                     style="min-width: 120px"
+              >
+                <v-icon>
+                  mdi-account-cancel
+                </v-icon>
+                设为用户
+              </v-btn>
             </v-list-item>
           </v-list>
         </v-app>
