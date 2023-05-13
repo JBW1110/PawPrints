@@ -18,7 +18,7 @@
       </el-menu-item>
       <el-menu-item index="/setadmin" router v-show="role==='超级管理员'">
         <i class="el-icon-user"></i>
-        <span slot="title">新增管理</span>
+        <span slot="title">权限管理</span>
       </el-menu-item>
       <el-menu-item index="/animaladoption" router>
         <i class="el-icon-house"></i>
