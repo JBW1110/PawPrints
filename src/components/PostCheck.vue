@@ -112,7 +112,7 @@ export default {
   methods:{
     getPosts() {
       this.$axios({
-        url:"http://localhost:8080/post/search",
+        url:"https://anitu1.2022martu1.cn:8443/post/search",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token'),
@@ -132,7 +132,7 @@ export default {
     },
     changeState(status,post){
       this.$axios({
-        url:"http://localhost:8080/changePostState",
+        url:"https://anitu1.2022martu1.cn:8443/changePostState",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token')

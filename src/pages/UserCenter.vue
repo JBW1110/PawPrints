@@ -102,7 +102,7 @@ export default {
     submitChangeInfo() {
       if (this.isEdit) {
         this.$axios({
-          url:"http://localhost:8080/changeBaseInfo",
+          url:"https://anitu1.2022martu1.cn:8443/changeBaseInfo",
           method: 'post',
           headers: {
             'token': localStorage.getItem('token')
@@ -121,7 +121,7 @@ export default {
     },
     getUserInformation: function () {
       this.$axios({
-        url:"http://localhost:8080/user/info",
+        url:"https://anitu1.2022martu1.cn:8443/user/info",
         method: 'post',
         headers: {
           'token':localStorage.getItem('token'),

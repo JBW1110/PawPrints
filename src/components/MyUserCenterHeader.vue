@@ -115,7 +115,7 @@ export default {
         // console.log(valid)
         if (valid) {
           this.$axios({
-            url:"http://localhost:8080/changePassword",
+            url:"https://anitu1.2022martu1.cn:8443/changePassword",
             method: 'post',
             headers: {
               'token': localStorage.getItem('token')

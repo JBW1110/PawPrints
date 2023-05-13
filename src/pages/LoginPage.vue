@@ -74,7 +74,7 @@ export default {
       con['password'] = this.loginForm.password;
       con['code'] = 0;
       this.$axios({
-        url: 'http://localhost:8080/login',
+        url: 'https://anitu1.2022martu1.cn:8443/login',
         method: 'post',
         data: Qs.stringify(con),
       }).then((ret) => {
