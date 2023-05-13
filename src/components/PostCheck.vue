@@ -3,7 +3,7 @@
     <div class="posts-container" style="margin-top: 10px">
       <div class="postBar" v-for="post in postList" :key="post.data" @click="post.show = !post.show">
         <div><img :src="post.postImgUrls[0]" alt="帖子封面" class="post_picture"></div>
-        <div class="post_name">{{ post.title }}</div>
+        <div class="post_name">{{post.title.length > 30 ? post.title.substring(0,30)+' ...':post.title}}</div>
         <div style="font-size: large;padding-top: 120px">{{post.publisherName}} {{post.publisherEmail}}</div>
         <v-dialog v-model="post.show">
           <v-card>
@@ -15,7 +15,7 @@
               </v-row>
             </v-col>
             <v-card-text style="margin-top: 20px">
-              <pre>{{ post.content }}</pre>
+              <pre style="white-space:pre-wrap">{{ post.content }}</pre>
             </v-card-text>
             <v-card-actions>
               <v-btn @click="changeState('审核通过',post)" style="margin-top: 20px;float: left;width: 20px" color="light-green">

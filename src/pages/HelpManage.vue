@@ -57,7 +57,7 @@
                   </v-card-title>
                   <v-card-subtitle style="margin-top: 10px">{{help.publisherEmail}}</v-card-subtitle>
                   <v-card-text style="margin-top: 10px">
-                    <pre>{{ help.content }}</pre>
+                    <pre style="white-space:pre-wrap">{{ help.content }}</pre>
                   </v-card-text>
                   <v-card-actions v-show="help.status==='求助中'">
                     <v-btn @click="changeState('处理中',help)" style="margin-top: 20px; width: 20px" color="light-green">

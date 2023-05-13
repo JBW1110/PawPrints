@@ -21,7 +21,7 @@
     <div class="posts-container" style="margin-top: 10px">
       <div class="postBar" v-for="post in postList" :key="post.data">
         <div  @click="post.show = !post.show"><img :src="post.postImgUrls[0]" alt="帖子封面" class="post_picture"></div>
-        <div class="post_name"  @click="post.show = !post.show">{{ post.title }}</div>
+        <div class="post_name"  @click="post.show = !post.show">{{post.title.length > 30 ? post.title.substring(0,30)+' ...':post.title}}</div>
         <div class="post_delete">
           <v-btn elevation="10" icon color="red" @click="deletePost(post.id)"
                  style="margin-right: 5px">
@@ -59,7 +59,7 @@
 <!--              </v-row>-->
             </v-col>
             <v-card-text style="margin-top: 20px">
-              <pre>{{ post.content }}</pre>
+              <pre style="white-space:pre-wrap">{{ post.content }}</pre>
             </v-card-text>
             <v-list>
               <v-list-item
@@ -84,7 +84,7 @@
                       <v-list-item-subtitle>{{ comment.createTime }}</v-list-item-subtitle>
                     </v-list-item-content>
                   </v-card-title>
-                  <pre v-html="comment.content" style="margin-left: 10px"></pre>
+                  <pre v-html="comment.content" style="margin-left: 10px;white-space:pre-wrap"></pre>
                 </v-card>
               </v-list-item>
 <!--              <v-card-text style="margin-top: 30px">参与讨论：</v-card-text>-->

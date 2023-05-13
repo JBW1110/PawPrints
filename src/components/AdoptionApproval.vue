@@ -31,7 +31,7 @@
                 <span class="headline">{{member.applicantNickname}}申请领养{{member.animalName}}</span>
               </v-card-title>
               <v-card-text style="margin-top: 20px">
-                <pre>{{ member.reason }}</pre>
+                <pre  style="white-space:pre-wrap">{{ member.reason }}</pre>
               </v-card-text>
               <v-textarea
                   v-model="member.notes"
