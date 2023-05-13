@@ -148,7 +148,7 @@ export default {
       let FormDatas = new FormData()
       FormDatas.append('file',item.file);
       this.$axios({
-        url: "http://localhost:8080/upload/file/post/temp",
+        url: "http://localhost:8080/upload/file/archive/temp",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token'),
