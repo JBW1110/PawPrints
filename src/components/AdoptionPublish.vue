@@ -35,7 +35,7 @@
           </v-btn>
           <v-btn color="purple lighten-3"
                  style="min-width: 120px"
-                 v-show="file.adoptState==='已领养'">
+                 v-show="file.adoptState==='已被领养'">
             <v-icon>
               mdi-account-heart
             </v-icon>
