@@ -153,7 +153,7 @@ export default {
 
 <style scoped>
 .files-container {
-  height: 800px;
+  /*height: 800px;*/
 }
 .fileBar {
   width: 600px;
