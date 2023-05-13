@@ -193,7 +193,7 @@ export default {
   methods:{
     getPosts() {
       this.$axios({
-        url:"http://localhost:8080/post/search",
+        url:"https://anitu1.2022martu1.cn:8443/post/search",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token'),
@@ -214,7 +214,7 @@ export default {
     },
     searchPost(){
       this.$axios({
-        url:"http://localhost:8080/post/search",
+        url:"https://anitu1.2022martu1.cn:8443/post/search",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token'),
@@ -236,7 +236,7 @@ export default {
     },
     thumbUp(post) {
       this.$axios({
-        url:"http://localhost:8080/post/thumb",
+        url:"https://anitu1.2022martu1.cn:8443/post/thumb",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token'),
@@ -263,7 +263,7 @@ export default {
     },
     makeComment(post) {
       this.$axios({
-        url:"http://localhost:8080/createComment",
+        url:"https://anitu1.2022martu1.cn:8443/createComment",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token'),
@@ -283,7 +283,7 @@ export default {
     },
     deletePost(id){
       this.$axios({
-        url:"http://localhost:8080/post/delete",
+        url:"https://anitu1.2022martu1.cn:8443/post/delete",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token'),

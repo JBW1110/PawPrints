@@ -77,7 +77,7 @@ export default {
     },
     getMessages() {
       this.$axios({
-        url:"http://localhost:8080/getMessageList",
+        url:"https://anitu1.2022martu1.cn:8443/getMessageList",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token')
@@ -95,7 +95,7 @@ export default {
     },
     deleteMessage(id) {
       this.$axios({
-        url:"http://localhost:8080/changeMessageState",
+        url:"https://anitu1.2022martu1.cn:8443/changeMessageState",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token')
@@ -116,7 +116,7 @@ export default {
     },
     deleteAllMessages() {
       this.$axios({
-        url:"http://localhost:8080/ReadAllMessage",
+        url:"https://anitu1.2022martu1.cn:8443/ReadAllMessage",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token')

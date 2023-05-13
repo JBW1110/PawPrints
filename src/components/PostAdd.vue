@@ -76,13 +76,13 @@ export default {
         type:'',
         title:'',
         content:'',
-        urls:["http://localhost:8080/createArchive"]
+        urls:["https://anitu1.2022martu1.cn:8443/createArchive"]
       },
       newForm: {
         type:'',
         title:'',
         content:'',
-        urls:["http://localhost:8080/createArchive"]
+        urls:["https://anitu1.2022martu1.cn:8443/createArchive"]
       },
     }
   },
@@ -94,7 +94,7 @@ export default {
       FormDatas.append('content', this.createPostForm.content);
       FormDatas.append('urls', this.createPostForm.urls);
       this.$axios({
-        url: "http://localhost:8080/createPost/urls",
+        url: "https://anitu1.2022martu1.cn:8443/createPost/urls",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token'),
@@ -118,7 +118,7 @@ export default {
       let FormDatas = new FormData()
       FormDatas.append('file', item.file);
       this.$axios({
-        url: "http://localhost:8080/upload/file/post/temp",
+        url: "https://anitu1.2022martu1.cn:8443/upload/file/post/temp",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token'),

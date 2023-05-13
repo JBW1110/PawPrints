@@ -97,7 +97,7 @@ export default {
         tnrState:"",
         adoptState:"不可领养",
         character:"",
-        urls:["http://localhost:8080/createArchive"]
+        urls:["https://anitu1.2022martu1.cn:8443/createArchive"]
       },
       newForm: {
         category:"",
@@ -123,7 +123,7 @@ export default {
       FormDatas.append('adoptState',this.createFileForm.adoptState);
       FormDatas.append('urls',this.createFileForm.urls);
       this.$axios({
-        url: "http://localhost:8080/createArchive/urls",
+        url: "https://anitu1.2022martu1.cn:8443/createArchive/urls",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token'),
@@ -148,7 +148,7 @@ export default {
       let FormDatas = new FormData()
       FormDatas.append('file',item.file);
       this.$axios({
-        url: "http://localhost:8080/upload/file/archive/temp",
+        url: "https://anitu1.2022martu1.cn:8443/upload/file/archive/temp",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token'),

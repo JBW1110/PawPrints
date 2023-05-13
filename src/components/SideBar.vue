@@ -28,6 +28,10 @@
         <i class="el-icon-phone-outline"></i>
         <span slot="title">求助管理</span>
       </el-menu-item>
+      <el-menu-item index="/animalmap" router>
+        <i class="el-icon-phone-outline"></i>
+        <span slot="title">智能追踪</span>
+      </el-menu-item>
 <!--      <el-menu-item index="/mainpage" router>-->
 <!--        <i class="el-icon-location-information"></i>-->
 <!--        <span slot="title">智能追踪</span>-->
@@ -55,7 +59,7 @@ export default {
   methods: {
     getUserInformation(){
       this.$axios({
-        url:"http://localhost:8080/user/info",
+        url:"https://anitu1.2022martu1.cn:8443/user/info",
         method: 'post',
         headers: {
           'token':localStorage.getItem('token'),

@@ -102,7 +102,7 @@ export default {
   methods: {
     changeState(member, status) {
       this.$axios({
-        url: "http://localhost:8080/admin/update/application",
+        url: "https://anitu1.2022martu1.cn:8443/admin/update/application",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token')
@@ -130,7 +130,7 @@ export default {
     },
     getMemberList () {
       this.$axios({
-        url: "http://localhost:8080/admin/query/application",
+        url: "https://anitu1.2022martu1.cn:8443/admin/query/application",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token')

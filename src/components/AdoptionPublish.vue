@@ -82,7 +82,7 @@ export default {
   methods: {
     changeState(file,status) {
       this.$axios({
-        url: "http://localhost:8080/updateArchive",
+        url: "https://anitu1.2022martu1.cn:8443/updateArchive",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token')
@@ -103,7 +103,7 @@ export default {
     },
     getFileList () {
       this.$axios({
-        url: "http://localhost:8080/query/archiveList",
+        url: "https://anitu1.2022martu1.cn:8443/query/archiveList",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token')

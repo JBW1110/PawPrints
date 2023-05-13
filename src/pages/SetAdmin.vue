@@ -78,7 +78,7 @@ export default {
   methods: {
     changeState(member,role) {
       this.$axios({
-        url: "http://localhost:8080/superAdmin/changeUserRole",
+        url: "https://anitu1.2022martu1.cn:8443/superAdmin/changeUserRole",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token')
@@ -98,7 +98,7 @@ export default {
     },
     getMembers() {
       this.$axios({
-        url: "http://localhost:8080/superAdmin/getUserList",
+        url: "https://anitu1.2022martu1.cn:8443/superAdmin/getUserList",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token')

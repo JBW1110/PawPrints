@@ -83,7 +83,7 @@ export default {
     submitChangeInfo(file) {
       if (this.isEdit) {
         this.$axios({
-          url:"http://localhost:8080/updateArchive",
+          url:"https://anitu1.2022martu1.cn:8443/updateArchive",
           method: 'post',
           headers: {
             'token': localStorage.getItem('token')
@@ -99,7 +99,7 @@ export default {
     },
     getFileList () {
       this.$axios({
-        url: "http://localhost:8080/query/archiveList",
+        url: "https://anitu1.2022martu1.cn:8443/query/archiveList",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token')
@@ -115,7 +115,7 @@ export default {
     },
     deleteFile(id){
       this.$axios({
-        url:"http://localhost:8080/deleteArchive",
+        url:"https://anitu1.2022martu1.cn:8443/deleteArchive",
         method: 'post',
         headers: {
           'token': localStorage.getItem('token')
