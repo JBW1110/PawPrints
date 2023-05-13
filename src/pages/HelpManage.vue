@@ -106,29 +106,15 @@ export default {
     return {
       helpList:[
         {
-          avatar:"../assets/白老大.png",
-          publisherName:"蒋博文",
+          avatar:"",
+          publisherName:"",
           show:false,
-          content:"我的猫在校园内走丢了",
-          email:"738822360@qq.com",
+          content:"",
+          email:"",
           status:"",
           message:"",
           notes:"",
           publisherEmail:""
-        },
-        {
-          avatar:"../assets/白老大.png",
-          name:"jbw",
-          show:false,
-          email:"738822360@qq.com",
-          cate:2,
-        },
-        {
-          avatar:"../assets/白老大.png",
-          name:"Kevin",
-          show:false,
-          email:"738822360@qq.com",
-          cate:3,
         }
       ]
     }
@@ -179,7 +165,15 @@ export default {
   },
   mounted () {
     this.getHelpList()
-  }
+  },
+  created () {
+    if(localStorage.getItem('token') == null){
+      let path = "/";
+      this.$router.push({
+        path
+      });
+    }
+  },
 }
 </script>
 

@@ -56,26 +56,12 @@ export default {
     return{
       fileList:[
         {
-          avatar:"../assets/白老大.png",
-          category:"奶牛",
-          nickname:"白老大",
+          avatar:"",
+          category:"",
+          nickname:"",
           show:false,
           adoptState:"",
         },
-        {
-          avatar:"../assets/白老大.png",
-          type:"奶牛",
-          name:"站长",
-          show:false,
-          cate:2,
-        },
-        {
-          avatar:"../assets/白老大.png",
-          type:"奶牛",
-          name:"传送阵",
-          show:false,
-          cate:3,
-        }
       ]
     }
   },

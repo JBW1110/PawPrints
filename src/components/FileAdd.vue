@@ -97,7 +97,7 @@ export default {
         tnrState:"",
         adoptState:"不可领养",
         character:"",
-        urls:["https://anitu1.2022martu1.cn:8443/createArchive"]
+        urls:[""]
       },
       newForm: {
         category:"",

@@ -66,14 +66,14 @@ export default {
         {
           urls:[],
           archiveId:"",
-          avatar:"../assets/白老大.png",
-          category:"奶牛",
-          nickname:"白老大",
-          weight:"4kg",
-          description:"跟皮皮猫长得有点像，花纹是黑白的，快递站干饭常客",
-          appearLocation:"快递站",
+          avatar:"",
+          category:"",
+          nickname:"",
+          weight:"",
+          description:"",
+          appearLocation:"",
           tnrState:"",
-          adoptState:"怕人 安全距离1m以外",
+          adoptState:"",
           show:false,
         }
       ]

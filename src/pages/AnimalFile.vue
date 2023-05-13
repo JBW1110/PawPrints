@@ -40,6 +40,14 @@ import FileAdd from '@/components/FileAdd'
 export default {
   name: 'AnimalFile',
   components: {FileView,FileAdd,MyHeader,SideBar},
+  created () {
+    if(localStorage.getItem('token') == null){
+      let path = "/";
+      this.$router.push({
+        path
+      });
+    }
+  },
 }
 </script>
 

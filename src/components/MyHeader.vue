@@ -49,12 +49,9 @@ export default {
       messageCount: 12,
       drawer: false,
       messages: [{
-        time: "2023-03-25 12:00:00",
-        content: '吴佳锐发起求助',
-      }, {
-        time: "2023-03-26 12:00:00",
-        content: "李骋艺申请领养"
-      },]
+        time: "",
+        content: '',
+      }]
     }
   },
   methods: {

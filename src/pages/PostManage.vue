@@ -46,6 +46,14 @@ import SideBar from '@/components/SideBar'
 export default {
   name: 'PostManage',
   components: {PostView,PostCheck,PostAdd,MyHeader,SideBar},
+  created () {
+    if(localStorage.getItem('token') == null){
+      let path = "/";
+      this.$router.push({
+        path
+      });
+    }
+  },
 }
 </script>
 

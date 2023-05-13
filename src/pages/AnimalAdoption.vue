@@ -38,6 +38,14 @@ import AdoptionPublish from '@/components/AdoptionPublish'
 export default {
   name: 'AnimalAdoption',
   components: {AdoptionPublish,AdoptionApproval,MyHeader,SideBar},
+  created () {
+    if(localStorage.getItem('token') == null){
+      let path = "/";
+      this.$router.push({
+        path
+      });
+    }
+  },
 }
 </script>
 

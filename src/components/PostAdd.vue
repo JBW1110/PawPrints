@@ -76,13 +76,13 @@ export default {
         type:'',
         title:'',
         content:'',
-        urls:["https://anitu1.2022martu1.cn:8443/createArchive"]
+        urls:[""]
       },
       newForm: {
         type:'',
         title:'',
         content:'',
-        urls:["https://anitu1.2022martu1.cn:8443/createArchive"]
+        urls:[""]
       },
     }
   },
