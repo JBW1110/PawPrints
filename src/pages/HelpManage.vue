@@ -57,7 +57,7 @@
                   </v-card-title>
                   <v-card-subtitle style="margin-top: 10px">{{help.publisherEmail}}</v-card-subtitle>
                   <v-card-text style="margin-top: 10px">
-                    <pre>{{ help.content }}</pre>
+                    <pre style="white-space:pre-wrap">{{ help.content }}</pre>
                   </v-card-text>
                   <v-card-actions v-show="help.status==='求助中'">
                     <v-btn @click="changeState('处理中',help)" style="margin-top: 20px; width: 20px" color="light-green">
@@ -65,7 +65,7 @@
                     </v-btn>
                   </v-card-actions>
                   <v-textarea
-                      v-show="help.status==='处理中'"
+                      v-show="help.status==='处理中' && role==='超级管理员'"
                       v-model="help.notes"
                       auto-grow
                       filled
@@ -76,7 +76,7 @@
                       style="width: 95%;margin-left: 30px"
                   >
                   </v-textarea>
-                  <v-card-actions v-show="help.status==='处理中'">
+                  <v-card-actions v-show="help.status==='处理中' && role==='超级管理员'">
                     <v-btn @click="changeState('处理完成',help)" style="margin-top: 20px; width: 20px" color="light-green">
                       完成求助
                     </v-btn>
@@ -104,31 +104,18 @@ export default {
   components: {MyHeader,SideBar},
   data() {
     return {
+      role:"",
       helpList:[
         {
-          avatar:"../assets/白老大.png",
-          publisherName:"蒋博文",
+          avatar:"",
+          publisherName:"",
           show:false,
-          content:"我的猫在校园内走丢了",
-          email:"738822360@qq.com",
+          content:"",
+          email:"",
           status:"",
           message:"",
           notes:"",
           publisherEmail:""
-        },
-        {
-          avatar:"../assets/白老大.png",
-          name:"jbw",
-          show:false,
-          email:"738822360@qq.com",
-          cate:2,
-        },
-        {
-          avatar:"../assets/白老大.png",
-          name:"Kevin",
-          show:false,
-          email:"738822360@qq.com",
-          cate:3,
         }
       ]
     }
@@ -175,11 +162,36 @@ export default {
           this.$bus.$emit("showSnackBar", res.data.errMessage)
         } else this.$notify.error(res.data.message)
       })
-    }
+    },
+    getUserInformation: function () {
+      this.$axios({
+        url:"https://anitu1.2022martu1.cn:8443/user/info",
+        method: 'post',
+        headers: {
+          'token':localStorage.getItem('token'),
+          // 'content-type':'multipart/form-data'
+        }
+      }).then((res) => {
+        // console.log(res.data)
+        if (res.data.code === 200) {
+          // console.log(res.data)
+          this.role = res.data.data.role
+        } else this.$notify.error(res.data.message)
+      })
+    },
   },
   mounted () {
     this.getHelpList()
-  }
+    this.getUserInformation()
+  },
+  created () {
+    if(localStorage.getItem('token') == null){
+      let path = "/";
+      this.$router.push({
+        path
+      });
+    }
+  },
 }
 </script>
 

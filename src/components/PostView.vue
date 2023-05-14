@@ -21,24 +21,24 @@
     <div class="posts-container" style="margin-top: 10px">
       <div class="postBar" v-for="post in postList" :key="post.data">
         <div  @click="post.show = !post.show"><img :src="post.postImgUrls[0]" alt="帖子封面" class="post_picture"></div>
-        <div class="post_name"  @click="post.show = !post.show">{{ post.title }}</div>
+        <div class="post_name"  @click="post.show = !post.show">{{post.title.length > 30 ? post.title.substring(0,30)+' ...':post.title}}</div>
         <div class="post_delete">
           <v-btn elevation="10" icon color="red" @click="deletePost(post.id)"
                  style="margin-right: 5px">
             <i class="el-icon-close" style="font-size: 30px;"></i>
           </v-btn>
         </div>
-        <div style="float:right;margin-right: 50px;margin-top: 70px">
-          <v-row>
-            <v-btn icon color="deep-orange" @click="thumbUp(post)" v-show="post.hasThumbed">
-              <svg-icon type="mdi" :path="pathUp"></svg-icon>
-            </v-btn>
-            <v-btn icon @click="thumbUp(post)" v-show="!post.hasThumbed">
-              <svg-icon type="mdi" :path="pathUp"></svg-icon>
-            </v-btn>
-            <div style="margin-top: 5px">{{ post.thumbNum }}</div>
-          </v-row>
-        </div>
+<!--        <div style="float:right;margin-right: 50px;margin-top: 70px">-->
+<!--          <v-row>-->
+<!--            <v-btn icon color="deep-orange" @click="thumbUp(post)" v-show="post.hasThumbed">-->
+<!--              <svg-icon type="mdi" :path="pathUp"></svg-icon>-->
+<!--            </v-btn>-->
+<!--            <v-btn icon @click="thumbUp(post)" v-show="!post.hasThumbed">-->
+<!--              <svg-icon type="mdi" :path="pathUp"></svg-icon>-->
+<!--            </v-btn>-->
+<!--            <div style="margin-top: 5px">{{ post.thumbNum }}</div>-->
+<!--          </v-row>-->
+<!--        </div>-->
         <v-dialog v-model="post.show">
           <v-card>
             <v-col>
@@ -48,18 +48,25 @@
                 <v-card-subtitle>
                   <span>{{ post.publisherName }} {{ post.publisherEmail }}</span>
                 </v-card-subtitle>
-              <v-row style="float: right;margin-right: 20px">
-                <v-btn icon color="deep-orange" @click="thumbUp(post)" v-show="post.hasThumbed">
-                  <svg-icon type="mdi" :path="pathUp"></svg-icon>
-                </v-btn>
-                <v-btn icon @click="thumbUp(post)" v-show="!post.hasThumbed">
-                  <svg-icon type="mdi" :path="pathUp"></svg-icon>
-                </v-btn>
-                <div style="margin-top: 5px">{{ post.thumbNum }}</div>
-              </v-row>
+<!--              <v-row style="float: right;margin-right: 20px">-->
+<!--                <v-btn icon color="deep-orange" @click="thumbUp(post)" v-show="post.hasThumbed">-->
+<!--                  <svg-icon type="mdi" :path="pathUp"></svg-icon>-->
+<!--                </v-btn>-->
+<!--                <v-btn icon @click="thumbUp(post)" v-show="!post.hasThumbed">-->
+<!--                  <svg-icon type="mdi" :path="pathUp"></svg-icon>-->
+<!--                </v-btn>-->
+<!--                <div style="margin-top: 5px">{{ post.thumbNum }}</div>-->
+<!--              </v-row>-->
             </v-col>
             <v-card-text style="margin-top: 20px">
-              <pre>{{ post.content }}</pre>
+              <div class="img_show">
+                <el-carousel :interval="4000" type="card" height="500px" indicator-position="outside">
+                  <el-carousel-item v-for="pic in post.postImgUrls" :key="pic">
+                    <img :src="pic" class="img" width="100%" height="100%">
+                  </el-carousel-item>
+                </el-carousel>
+              </div>
+              <pre style="white-space:pre-wrap">{{ post.content }}</pre>
             </v-card-text>
             <v-list>
               <v-list-item
@@ -84,27 +91,27 @@
                       <v-list-item-subtitle>{{ comment.createTime }}</v-list-item-subtitle>
                     </v-list-item-content>
                   </v-card-title>
-                  <pre v-html="comment.content" style="margin-left: 10px"></pre>
+                  <pre v-html="comment.content" style="margin-left: 10px;white-space:pre-wrap"></pre>
                 </v-card>
               </v-list-item>
-              <v-card-text style="margin-top: 30px">参与讨论：</v-card-text>
+<!--              <v-card-text style="margin-top: 30px">参与讨论：</v-card-text>-->
             </v-list>
-            <v-textarea
-                v-model="post.comment"
-                auto-grow
-                filled
-                clearable
-                color="deep-purple"
-                label="请输入评论内容"
-                rows="1"
-                style="width: 95%;margin-left: 30px"
-            >
-            </v-textarea>
-            <v-card-actions>
-              <v-btn @click="makeComment(post)" style="margin-top: 20px;float: left;width: 20px" color="primary">
-                评论
-              </v-btn>
-            </v-card-actions>
+<!--            <v-textarea-->
+<!--                v-model="post.comment"-->
+<!--                auto-grow-->
+<!--                filled-->
+<!--                clearable-->
+<!--                color="deep-purple"-->
+<!--                label="请输入评论内容"-->
+<!--                rows="1"-->
+<!--                style="width: 95%;margin-left: 30px"-->
+<!--            >-->
+<!--            </v-textarea>-->
+<!--            <v-card-actions>-->
+<!--              <v-btn @click="makeComment(post)" style="margin-top: 20px;float: left;width: 20px" color="primary">-->
+<!--                评论-->
+<!--              </v-btn>-->
+<!--            </v-card-actions>-->
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="green darken-1" text @click="post.show = false">关闭</v-btn>
@@ -118,12 +125,12 @@
 
 <script>
 import Qs from 'qs'
-import SvgIcon from '@jamescoyle/vue-icon'
+// import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiThumbUp } from '@mdi/js'
 
 export default {
   name: 'PostView',
-  components:{SvgIcon},
+  // components:{SvgIcon},
   data(){
     return{
       pathUp:mdiThumbUp,
@@ -134,8 +141,8 @@ export default {
         content:"",
       },
       postList:[{
-        cover: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-        title: "测试帖",
+        cover: "",
+        title: "",
         show: false,
         hasThumbed:'',
         postImgUrls:'',
@@ -149,44 +156,14 @@ export default {
         comment:'',
         comments: [
           {
-            content:"说的太好了!!!!",
+            content:"",
             comment_id:"",
-            user_name:"蒋博文",
-            time:"2023-4-10",
-            user_avatar:"https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+            user_name:"",
+            time:"",
+            user_avatar:"",
           }
         ],
-        content:"经常有同学给校园中的猫咪们投喂猫条、火腿肠、面包等食物，更有甚者还在猫粮碗中放烧烤和剩饭。殊不知很多人类喜欢吃的食物猫猫并不喜欢，还会对猫咪的健康产生危害。\n" +
-            "\n" +
-            "人类是杂食动物，而猫是纯粹的肉食动物，人类和猫的食谱并不一样。可能猫咪在人类社会的高融入度让很多人产生了错觉，但请记住，人猫有别，不要让一厢情愿的“爱”害了猫猫。\n" +
-            "\n" +
-            "\n" +
-            "\n" +
-            "如果要投喂猫猫，请准备猫粮、冻干或主食罐头，千万不要喂猫咪人类的食物！！！"+
-            "\n" +
-            "经常有同学给校园中的猫咪们投喂猫条、火腿肠、面包等食物，更有甚者还在猫粮碗中放烧烤和剩饭。殊不知很多人类喜欢吃的食物猫猫并不喜欢，还会对猫咪的健康产生危害。\n" +
-            "\n" +
-            "人类是杂食动物，而猫是纯粹的肉食动物，人类和猫的食谱并不一样。可能猫咪在人类社会的高融入度让很多人产生了错觉，但请记住，人猫有别，不要让一厢情愿的“爱”害了猫猫。\n" +
-            "\n" +
-            "\n" +
-            "\n" +
-            "如果要投喂猫猫，请准备猫粮、冻干或主食罐头，千万不要喂猫咪人类的食物！！！"+
-            "\n" +
-            "经常有同学给校园中的猫咪们投喂猫条、火腿肠、面包等食物，更有甚者还在猫粮碗中放烧烤和剩饭。殊不知很多人类喜欢吃的食物猫猫并不喜欢，还会对猫咪的健康产生危害。\n" +
-            "\n" +
-            "人类是杂食动物，而猫是纯粹的肉食动物，人类和猫的食谱并不一样。可能猫咪在人类社会的高融入度让很多人产生了错觉，但请记住，人猫有别，不要让一厢情愿的“爱”害了猫猫。\n" +
-            "\n" +
-            "\n" +
-            "\n" +
-            "如果要投喂猫猫，请准备猫粮、冻干或主食罐头，千万不要喂猫咪人类的食物！！！"+
-            "\n" +
-            "经常有同学给校园中的猫咪们投喂猫条、火腿肠、面包等食物，更有甚者还在猫粮碗中放烧烤和剩饭。殊不知很多人类喜欢吃的食物猫猫并不喜欢，还会对猫咪的健康产生危害。\n" +
-            "\n" +
-            "人类是杂食动物，而猫是纯粹的肉食动物，人类和猫的食谱并不一样。可能猫咪在人类社会的高融入度让很多人产生了错觉，但请记住，人猫有别，不要让一厢情愿的“爱”害了猫猫。\n" +
-            "\n" +
-            "\n" +
-            "\n" +
-            "如果要投喂猫猫，请准备猫粮、冻干或主食罐头，千万不要喂猫咪人类的食物！！！"
+        content:""
       }]
     }
   },
@@ -354,5 +331,14 @@ export default {
   margin-right: 10px;
   height: 45px;
   float: right;
+}
+.img_show{
+  /*background-color: dimgrey;*/
+  padding-top: 50px;
+  width: 70%;
+  margin-left: 15%;
+}
+.img{
+  align-content: center;
 }
 </style>

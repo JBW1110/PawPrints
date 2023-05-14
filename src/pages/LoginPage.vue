@@ -42,11 +42,11 @@ export default {
   name: "LoginPage",
   data() {
     let checkNewPwd = (rule, value, callback) => {
-      let pwdReg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,18}$/;
+      // let pwdReg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,18}$/;
       //如果字符串 string 中含有与 RegExpObject 匹配的文本，则返回 true，否则返回 false。
-      if (!pwdReg.test(value)) {
-        callback(new Error("密码长度8-18位，且需同时包含英文和数字"));
-      }
+      // if (!pwdReg.test(value)) {
+      //   callback(new Error("密码长度8-18位，且需同时包含英文和数字"));
+      // }
       callback();
     }
     let checkEmail = (rule, value, callback) => {
@@ -78,14 +78,21 @@ export default {
         method: 'post',
         data: Qs.stringify(con),
       }).then((ret) => {
-        // console.log(ret.data)
+        console.log(ret.data)
         if (ret.data.code === 200) {
-          localStorage.setItem('token',ret.data.token);
-          this.$message.success("登录成功");
-          this.$router.push('/usercenter');
+          if (ret.data.data.authority === 'ROLE_USER'){
+            this.$message.error("用户账号无法登录管理端！")
+          } else {
+            localStorage.setItem('token',ret.data.token);
+            this.$message.success("登录成功");
+            this.$router.push('/usercenter');
+          }
         } else this.$notify.error(ret.data.message+"，登录失败");
       })
     },
+  },
+  created () {
+    localStorage.clear()
   }
 }
 </script>

@@ -31,6 +31,14 @@ export default {
   mounted() {
     this.initMap()
   },
+  created () {
+    if(localStorage.getItem('token') == null){
+      let path = "/";
+      this.$router.push({
+        path
+      });
+    }
+  },
   methods: {
     initMap() {
       console.log(window)

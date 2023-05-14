@@ -3,7 +3,7 @@
     <div class="files-container" style="margin-top: 10px">
       <div class="fileBar" v-for="file in fileList" :key="file.data">
         <div @click="file.show = !file.show"><img :src="file.urls[0]" alt="动物照片" class="file_picture"></div>
-        <div class="file_name" @click="file.show = !file.show">{{ file.nickname }}</div>
+        <div class="file_name" @click="file.show = !file.show">{{file.nickname.length > 8 ? file.nickname.substring(0,8)+' ...':file.nickname}}</div>
         <div class="file_delete">
           <v-btn elevation="10" icon color="red" @click="deleteFile(file.archiveId)"
                  style="margin-right: 5px">
@@ -18,7 +18,7 @@
               <span class="headline">{{ file.nickname }}</span>
             </v-card-title>
             <div class="link-top"></div>
-            <v-card-text style="margin-top: 20px">
+            <v-card-text style="margin-top: 20px;">
               <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="!isEdit">种类：{{ file.category }}</pre>
               <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="isEdit">种类：</pre>
               <el-input style="margin-bottom: 10px" size="mini" v-model="file.category" v-show="isEdit"></el-input>
@@ -34,8 +34,8 @@
               <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="!isEdit">领养状态：{{ file.adoptState }}</pre>
               <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="isEdit">领养状态：</pre>
               <el-input style="margin-bottom: 10px" size="mini" v-model="file.adoptState" v-show="isEdit"></el-input>
-              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="!isEdit">描述：{{file.description}}</pre>
-              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="isEdit">描述：</pre>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px;white-space:pre-wrap" v-show="!isEdit">描述：{{file.description}}</pre>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px;" v-show="isEdit">描述：</pre>
               <el-input style="margin-bottom: 10px" size="mini" v-model="file.description" v-show="isEdit"></el-input>
               <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="!isEdit">出没位置：{{file.appearLocation}}</pre>
               <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="isEdit">出没位置：</pre>
@@ -66,14 +66,14 @@ export default {
         {
           urls:[],
           archiveId:"",
-          avatar:"../assets/白老大.png",
-          category:"奶牛",
-          nickname:"白老大",
-          weight:"4kg",
-          description:"跟皮皮猫长得有点像，花纹是黑白的，快递站干饭常客",
-          appearLocation:"快递站",
+          avatar:"",
+          category:"",
+          nickname:"",
+          weight:"",
+          description:"",
+          appearLocation:"",
           tnrState:"",
-          adoptState:"怕人 安全距离1m以外",
+          adoptState:"",
           show:false,
         }
       ]
@@ -153,7 +153,7 @@ export default {
 
 <style scoped>
 .files-container {
-  height: 800px;
+  /*height: 800px;*/
 }
 .fileBar {
   width: 600px;

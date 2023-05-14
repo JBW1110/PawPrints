@@ -42,6 +42,16 @@
                 </v-icon>
                 取消管理员
               </v-btn>
+              <v-btn v-show="member.role === '访客'"
+                     color="purple lighten-3"
+                     @click="changeState(member,'ROLE_USER')"
+                     style="min-width: 120px"
+              >
+                <v-icon>
+                  mdi-account-cancel
+                </v-icon>
+                设为用户
+              </v-btn>
             </v-list-item>
           </v-list>
         </v-app>
@@ -61,17 +71,11 @@ export default {
   data() {
     return {
       members: [{
-        user_id: "123",
-        nickName: "吴佳锐",
-        headImgUrl: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-        email:"738822360@qq.com",
+        user_id: "",
+        nickName: "",
+        headImgUrl: "",
+        email:"",
         role: false,
-      }, {
-        user_id: "20373201",
-        real_name: "蒋博文",
-        avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-        email:"738822360@qq.com",
-        isAdmin: true,
       }]
     }
   },
@@ -116,7 +120,15 @@ export default {
   },
   mounted () {
     this.getMembers()
-  }
+  },
+  created () {
+    if(localStorage.getItem('token') == null){
+      let path = "/";
+      this.$router.push({
+        path
+      });
+    }
+  },
 }
 </script>
 <style>

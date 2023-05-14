@@ -148,6 +148,14 @@ export default {
   mounted() {
     this.getUserInformation()
   },
+  created () {
+    if(localStorage.getItem('token') == null){
+      let path = "/";
+      this.$router.push({
+        path
+      });
+    }
+  },
 }
 </script>
 

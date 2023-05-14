@@ -107,9 +107,6 @@ export default {
     }
   },
   methods: {
-    /*
-    DO: 验证密码正确性的接口
-     */
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         // console.log(valid)
