@@ -78,7 +78,7 @@ export default {
         method: 'post',
         data: Qs.stringify(con),
       }).then((ret) => {
-        console.log(ret.data)
+        // console.log(ret.data)
         if (ret.data.code === 200) {
           if (ret.data.data.authority === 'ROLE_USER'){
             this.$message.error("用户账号无法登录管理端！")
@@ -88,6 +88,11 @@ export default {
             this.$router.push('/usercenter');
           }
         } else this.$notify.error(ret.data.message+"，登录失败");
+      }).catch((error) => {
+        // console.log(error)
+        if(error.message==='Request failed with status code 403') {
+          this.$message.error("邮箱或密码错误！")
+        }
       })
     },
   },
