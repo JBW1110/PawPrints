@@ -13,12 +13,12 @@
             <v-list-item
                 v-for="member in members"
                 :key="member.user_id">
-              <v-list-item-avatar>
+              <v-list-item-avatar style="margin-top: 15px">
                 <v-avatar>
                   <img :src="member.headImgUrl" alt="头像">
                 </v-avatar>
               </v-list-item-avatar>
-              <v-list-item-content style="padding-left: 10px">
+              <v-list-item-content style="padding-left: 10px;height: 50px">
                 <v-list-item-title v-text="member.nickName"></v-list-item-title>
                 <v-list-item-subtitle v-text="member.email"></v-list-item-subtitle>
               </v-list-item-content>
