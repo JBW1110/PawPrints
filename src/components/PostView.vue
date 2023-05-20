@@ -18,10 +18,13 @@
 <!--        </el-dropdown>-->
 <!--      </div>-->
     </div>
+    <el-pagination @current-change="curChange()" @size-change="sizeChange"
+                   :current-page="page" :page-size="size" :total="total"
+                   layout="total,sizes,prev,pager,next,jumper"></el-pagination>
     <div class="posts-container" style="margin-top: 10px">
       <div class="postBar" v-for="post in postList" :key="post.data">
-        <div  @click="post.show = !post.show"><img :src="post.postImgUrls[0]" alt="帖子封面" class="post_picture"></div>
-        <div class="post_name"  @click="post.show = !post.show">{{post.title.length > 30 ? post.title.substring(0,30)+' ...':post.title}}</div>
+        <div  @click="getComment(post)"><img :src="post.postImgUrls[0]" alt="帖子封面" class="post_picture"></div>
+        <div class="post_name"  @click="getComment(post)">{{post.title.length > 30 ? post.title.substring(0,30)+' ...':post.title}}</div>
         <div class="post_delete">
           <v-btn elevation="10" icon color="red" @click="deletePost(post.id)"
                  style="margin-right: 5px">
@@ -59,8 +62,8 @@
 <!--              </v-row>-->
             </v-col>
             <v-card-text style="margin-top: 20px">
-              <div class="img_show">
-                <el-carousel :interval="4000" type="card" height="500px" indicator-position="outside">
+              <div class="img_show" v-show="post.postImgUrls.length > 0">
+                <el-carousel :interval="4000" type="card" height="450px" indicator-position="outside">
                   <el-carousel-item v-for="pic in post.postImgUrls" :key="pic">
                     <img :src="pic" class="img" width="100%" height="100%">
                   </el-carousel-item>
@@ -68,6 +71,9 @@
               </div>
               <pre style="white-space:pre-wrap">{{ post.content }}</pre>
             </v-card-text>
+<!--            <el-pagination @current-change="curCommentChange(val,post)" @size-change="sizeCommentChange(val,post)"-->
+<!--                           :current-page="comment_page" :page-size="comment_size" :total="comment_total" :page-sizes="comment_pageSizes"-->
+<!--                           layout="total,sizes,prev,pager,next,jumper"></el-pagination>-->
             <v-list>
               <v-list-item
                   v-for="comment in post.commentDTOS"
@@ -133,6 +139,13 @@ export default {
   // components:{SvgIcon},
   data(){
     return{
+      page:0,
+      size:10,
+      total:0,
+      comment_page:0,
+      comment_size:10,
+      comment_total:0,
+      comment_pageSizes:[1,2,3,10,20],
       pathUp:mdiThumbUp,
       searchPostName: '',
       tag:'',
@@ -168,6 +181,59 @@ export default {
     }
   },
   methods:{
+    getComment(post) {
+      this.$axios({
+        url:"https://anitu1.2022martu1.cn:8443/get/comment",
+        method: 'post',
+        headers: {
+          'token': localStorage.getItem('token'),
+        },
+        data: Qs.stringify({
+          postId:post.id,
+        })
+      }).then((res)=>{
+        // console.log(post)
+        if(res.data.code===200){
+          post.show = !post.show
+          post.commentDTOS = res.data.data.content
+          this.comment_total = post.commentCount
+        } else if (res.data.code===404){
+          this.$bus.$emit("showSnackBar", res.data.errMessage)
+        } else this.$notify.error(res.data.message)
+      })
+    },
+    getComment2(post) {
+      this.$axios({
+        url:"https://anitu1.2022martu1.cn:8443/get/comment",
+        method: 'post',
+        headers: {
+          'token': localStorage.getItem('token'),
+        },
+        data: Qs.stringify({
+          postId:post.id,
+          pageIndex:this.comment_page,
+          pageSize:this.comment_size
+        })
+      }).then((res)=>{
+        // console.log(post)
+        if(res.data.code===200){
+          // console.log(res.data.data)
+          post.commentDTOS = res.data.data.content
+        } else if (res.data.code===404){
+          this.$bus.$emit("showSnackBar", res.data.errMessage)
+        } else this.$notify.error(res.data.message)
+      })
+    },
+    curCommentChange(val,post) {
+      this.page = val;
+      console.log(post)
+      this.getComment2(post)
+    },
+    sizeCommentChange(val,post) {
+      this.size = val;
+      this.page = 1;
+      this.getComment2(post)
+    },
     getPosts() {
       this.$axios({
         url:"https://anitu1.2022martu1.cn:8443/post/search",
@@ -178,16 +244,27 @@ export default {
         data: Qs.stringify({
           'type': '科普',
           'status': '审核通过',
+          pageIndex:this.page,
+          pageSize:this.size
         })
       }).then((res)=>{
         if(res.data.code===200){
           // console.log(res.data.data)
-          this.postList = res.data.data
-          this.$bus.$emit("showSnackBar", "修改密码成功！")
+          this.postList = res.data.data.content
+          this.total = res.data.data.totalElements
         } else if (res.data.code===404){
           this.$bus.$emit("showSnackBar", res.data.errMessage)
         } else this.$notify.error(res.data.message)
       })
+    },
+    curChange(val) {
+      this.page = val;
+      this.searchPost()
+    },
+    sizeChange(val) {
+      this.size = val;
+      this.page = 1;
+      this.searchPost()
     },
     searchPost(){
       this.$axios({
@@ -200,12 +277,14 @@ export default {
           'type': '科普',
           'status': '审核通过',
           'keyword': this.searchPostName,
+          pageIndex:0,
+          pageSize:this.size
         })
       }).then((res)=>{
         if(res.data.code===200){
-          // console.log(res.data.data)
-          this.postList = res.data.data
-          this.$bus.$emit("showSnackBar", "修改密码成功！")
+          this.page = 1
+          this.total = res.data.data.totalElements
+          this.postList = res.data.data.content
         } else if (res.data.code===404){
           this.$bus.$emit("showSnackBar", res.data.errMessage)
         } else this.$notify.error(res.data.message)
