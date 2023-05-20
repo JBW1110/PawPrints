@@ -11,11 +11,14 @@
         <v-dialog v-model="post.show">
           <v-card>
             <v-col>
-              <v-row>
-                <v-card-title>
-                  <span class="headline">{{ post.title }}</span>
-                </v-card-title>
-              </v-row>
+              <v-card-title>
+                <span class="headline">{{ post.title }}</span>
+              </v-card-title>
+              <v-card-subtitle>
+                <pre>发布者：{{ post.publisherName }}</pre>
+                <pre>邮箱：{{ post.publisherEmail }}</pre>
+                <pre>发布时间：{{post.createTime}}</pre>
+              </v-card-subtitle>
             </v-col>
             <v-card-text style="margin-top: 20px">
               <div class="img_show" v-show="post.postImgUrls.length > 0">

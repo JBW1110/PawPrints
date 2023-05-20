@@ -49,7 +49,9 @@
                   <span class="headline">{{ post.title }}</span>
                 </v-card-title>
                 <v-card-subtitle>
-                  <span>{{ post.publisherName }} {{ post.publisherEmail }}</span>
+                  <pre>发布者：{{ post.publisherName }}</pre>
+                  <pre>邮箱：{{ post.publisherEmail }}</pre>
+                  <pre>发布时间：{{post.createTime}}</pre>
                 </v-card-subtitle>
 <!--              <v-row style="float: right;margin-right: 20px">-->
 <!--                <v-btn icon color="deep-orange" @click="thumbUp(post)" v-show="post.hasThumbed">-->
@@ -249,7 +251,7 @@ export default {
         })
       }).then((res)=>{
         if(res.data.code===200){
-          // console.log(res.data.data)
+          console.log(res.data.data)
           this.postList = res.data.data.content
           this.total = res.data.data.totalElements
         } else if (res.data.code===404){
