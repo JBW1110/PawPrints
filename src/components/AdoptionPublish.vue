@@ -2,6 +2,9 @@
   <el-main>
     <v-app>
       <v-list subheader>
+        <el-pagination @current-change="curChange" @size-change="sizeChange"
+                       :current-page="page" :page-size="size" :total="total"
+                       layout="total,sizes,prev,pager,next,jumper"></el-pagination>
         <v-list-item
             v-for="file in fileList"
             :key="file.name">
@@ -54,6 +57,9 @@ export default {
   name: 'AdoptionPublish',
   data() {
     return{
+      page:0,
+      size:10,
+      total:0,
       fileList:[
         {
           avatar:"",
@@ -94,15 +100,29 @@ export default {
         headers: {
           'token': localStorage.getItem('token')
         },
+        data: Qs.stringify({
+          pageIndex:this.page,
+          pageSize:this.size
+        })
       }).then((res) => {
-        console.log(res.data)
+        // console.log(res.data)
         if (res.data.code === 200) {
-          this.fileList = res.data.data
+          this.fileList = res.data.data.content
+          this.total = res.data.data.totalElements
         } else if (res.data.code === 404) {
           this.$bus.$emit("showSnackBar", res.data.errMessage)
         } else this.$notify.error(res.data.message)
       })
     },
+  },
+  curChange(val) {
+    this.page = val;
+    this.getFileList()
+  },
+  sizeChange(val) {
+    this.size = val;
+    this.page = 1;
+    this.getFileList()
   },
   mounted () {
     this.getFileList()

@@ -10,6 +10,9 @@
       <el-main>
         <v-app>
           <v-list subheader>
+            <el-pagination @current-change="curChange" @size-change="sizeChange"
+                           :current-page="page" :page-size="size" :total="total"
+                           layout="total,sizes,prev,pager,next,jumper"></el-pagination>
             <v-list-item
                 v-for="help in helpList"
                 :key="help.name">
@@ -55,8 +58,18 @@
                   <v-card-title>
                     <span class="headline">{{ help.publisherName }}的求助</span>
                   </v-card-title>
-                  <v-card-subtitle style="margin-top: 10px">{{help.publisherEmail}}</v-card-subtitle>
+                  <v-card-subtitle style="margin-top: 10px">
+                    <pre>邮箱：{{ help.publisherEmail }}</pre>
+                    <pre>求助时间：{{help.createTime}}</pre>
+                  </v-card-subtitle>
                   <v-card-text style="margin-top: 10px">
+                    <div class="img_show" v-show="help.postImgUrls.length > 0">
+                      <el-carousel :interval="4000" type="card" height="450px" indicator-position="outside">
+                        <el-carousel-item v-for="pic in help.postImgUrls" :key="pic">
+                          <img :src="pic" class="img" width="100%" height="100%">
+                        </el-carousel-item>
+                      </el-carousel>
+                    </div>
                     <pre style="white-space:pre-wrap">{{ help.content }}</pre>
                   </v-card-text>
                   <v-card-actions v-show="help.status==='求助中'">
@@ -104,6 +117,9 @@ export default {
   components: {MyHeader,SideBar},
   data() {
     return {
+      page:0,
+      size:10,
+      total:0,
       role:"",
       helpList:[
         {
@@ -152,16 +168,28 @@ export default {
           'token': localStorage.getItem('token')
         },
         data: Qs.stringify({
-          type:'求助'
+          type:'求助',
+          pageIndex:this.page,
+          pageSize:this.size
         })
       }).then((res)=>{
         // console.log(res.data)
         if(res.data.code===200){
-          this.helpList = res.data.data
+          this.helpList = res.data.data.content
+          this.total = res.data.data.totalElements
         } else if (res.data.code===404){
           this.$bus.$emit("showSnackBar", res.data.errMessage)
         } else this.$notify.error(res.data.message)
       })
+    },
+    curChange(val) {
+      this.page = val;
+      this.getHelpList()
+    },
+    sizeChange(val) {
+      this.size = val;
+      this.page = 1;
+      this.getHelpList()
     },
     getUserInformation: function () {
       this.$axios({
@@ -196,5 +224,13 @@ export default {
 </script>
 
 <style scoped>
-
+.img_show{
+  /*background-color: dimgrey;*/
+  padding-top: 50px;
+  width: 70%;
+  margin-left: 15%;
+}
+.img{
+  align-content: center;
+}
 </style>
