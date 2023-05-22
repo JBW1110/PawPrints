@@ -1,6 +1,9 @@
 <template>
   <div style="height: 800px;">
     <div class="posts-container" style="margin-top: 10px">
+      <el-pagination @current-change="curChange" @size-change="sizeChange"
+                     :current-page="page" :page-size="size" :total="total"
+                     layout="total,sizes,prev,pager,next,jumper"></el-pagination>
       <div class="postBar" v-for="post in postList" :key="post.data" @click="post.show = !post.show">
         <div><img :src="post.postImgUrls[0]" alt="帖子封面" class="post_picture"></div>
         <div class="post_name">{{post.title.length > 30 ? post.title.substring(0,30)+' ...':post.title}}</div>
@@ -8,15 +11,18 @@
         <v-dialog v-model="post.show">
           <v-card>
             <v-col>
-              <v-row>
-                <v-card-title>
-                  <span class="headline">{{ post.title }}</span>
-                </v-card-title>
-              </v-row>
+              <v-card-title>
+                <span class="headline">{{ post.title }}</span>
+              </v-card-title>
+              <v-card-subtitle>
+                <pre>发布者：{{ post.publisherName }}</pre>
+                <pre>邮箱：{{ post.publisherEmail }}</pre>
+                <pre>发布时间：{{post.createTime}}</pre>
+              </v-card-subtitle>
             </v-col>
             <v-card-text style="margin-top: 20px">
-              <div class="img_show">
-                <el-carousel :interval="4000" type="card" height="500px" indicator-position="outside">
+              <div class="img_show" v-show="post.postImgUrls.length > 0">
+                <el-carousel :interval="4000" type="card" height="450px" indicator-position="outside">
                   <el-carousel-item v-for="pic in post.postImgUrls" :key="pic">
                     <img :src="pic" class="img" width="100%" height="100%">
                   </el-carousel-item>
@@ -73,6 +79,9 @@ export default {
   name: 'PostCheck',
   data(){
     return{
+      page:0,
+      size:10,
+      total:0,
       searchPostName: '',
       tag:'',
       postList:[{
@@ -110,16 +119,27 @@ export default {
         },
         data: Qs.stringify({
           'type': '科普',
-          'status': '审核中'
+          'status': '审核中',
+          pageIndex:this.page,
+          pageSize:this.size
         })
       }).then((res)=>{
         if(res.data.code===200){
-          console.log(res.data.data)
-          this.postList = res.data.data
+          this.postList = res.data.data.content
+          this.total = res.data.data.totalElements
         } else if (res.data.code===404){
           this.$bus.$emit("showSnackBar", res.data.errMessage)
         } else this.$notify.error(res.data.message)
       })
+    },
+    curChange(val) {
+      this.page = val;
+      this.searchPost()
+    },
+    sizeChange(val) {
+      this.size = val;
+      this.page = 1;
+      this.searchPost()
     },
     changeState(status,post){
       this.$axios({

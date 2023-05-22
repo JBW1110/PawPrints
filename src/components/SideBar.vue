@@ -29,7 +29,7 @@
         <span slot="title">求助管理</span>
       </el-menu-item>
       <el-menu-item index="/animalmap" router>
-        <i class="el-icon-phone-outline"></i>
+        <i class="el-icon-location"></i>
         <span slot="title">智能追踪</span>
       </el-menu-item>
 <!--      <el-menu-item index="/mainpage" router>-->

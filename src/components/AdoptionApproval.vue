@@ -2,6 +2,9 @@
   <el-main>
     <v-app>
       <v-list subheader>
+        <el-pagination @current-change="curChange" @size-change="sizeChange"
+                       :current-page="page" :page-size="size" :total="total"
+                       layout="total,sizes,prev,pager,next,jumper"></el-pagination>
         <v-list-item
             v-for="member in members"
             :key="member.archiveID"
@@ -67,6 +70,9 @@ export default {
   name: 'AdoptionApproval',
   data() {
     return {
+      page:0,
+      size:10,
+      total:0,
       members: [{
         user_id: "",
         applicantNickname: "",
@@ -117,14 +123,28 @@ export default {
         headers: {
           'token': localStorage.getItem('token')
         },
+        data: Qs.stringify({
+          pageIndex:this.page,
+          pageSize:this.size
+        })
       }).then((res) => {
         // console.log(res.data)
         if (res.data.code === 200) {
-          this.members = res.data.data
+          this.members = res.data.data.content
+          this.total = res.data.data.totalElements
         } else if (res.data.code === 404) {
           this.$bus.$emit("showSnackBar", res.data.errMessage)
         } else this.$notify.error(res.data.message)
       })
+    },
+    curChange(val) {
+      this.page = val;
+      this.getMemberList()
+    },
+    sizeChange(val) {
+      this.size = val;
+      this.page = 1;
+      this.getMemberList()
     },
   },
   mounted () {

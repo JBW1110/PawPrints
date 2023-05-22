@@ -1,6 +1,9 @@
 <template>
   <v-app>
     <div class="files-container" style="margin-top: 10px">
+      <el-pagination @current-change="curChange" @size-change="sizeChange"
+          :current-page="page" :page-size="size" :total="total"
+          layout="total,sizes,prev,pager,next,jumper"></el-pagination>
       <div class="fileBar" v-for="file in fileList" :key="file.data">
         <div @click="file.show = !file.show"><img :src="file.urls[0]" alt="动物照片" class="file_picture"></div>
         <div class="file_name" @click="file.show = !file.show">{{file.nickname.length > 8 ? file.nickname.substring(0,8)+' ...':file.nickname}}</div>
@@ -62,6 +65,9 @@ export default {
   data() {
     return{
       isEdit: false,
+      page:0,
+      size:10,
+      total:0,
       fileList:[
         {
           urls:[],
@@ -104,14 +110,29 @@ export default {
         headers: {
           'token': localStorage.getItem('token')
         },
+        data: Qs.stringify({
+          pageIndex:this.page,
+          pageSize:this.size
+        })
       }).then((res) => {
-        console.log(res.data)
+        // console.log(res.data.data)
         if (res.data.code === 200) {
-          this.fileList = res.data.data
+          this.fileList = res.data.data.content
+          // this.size = res.data.data.pageable.pageSize
+          this.total = res.data.data.totalElements
         } else if (res.data.code === 404) {
           this.$bus.$emit("showSnackBar", res.data.errMessage)
         } else this.$notify.error(res.data.errMessage)
       })
+    },
+    curChange(val) {
+      this.page = val;
+      this.getFileList()
+    },
+    sizeChange(val) {
+      this.size = val;
+      this.page = 1;
+      this.getFileList()
     },
     deleteFile(id){
       this.$axios({
@@ -142,6 +163,7 @@ export default {
         return "提交"
       } else {
         return "编辑"
+
       }
     }
   },
