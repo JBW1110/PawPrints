@@ -69,31 +69,39 @@ export default {
   },
   methods:{
     login: function () {
-      let con = {};
-      con['username'] = this.loginForm.email;
-      con['password'] = this.loginForm.password;
-      con['code'] = 0;
-      this.$axios({
-        url: 'https://anitu1.2022martu1.cn:8443/login',
-        method: 'post',
-        data: Qs.stringify(con),
-      }).then((ret) => {
-        // console.log(ret.data)
-        if (ret.data.code === 200) {
-          if (ret.data.data.authority === 'ROLE_USER'){
-            this.$message.error("用户账号无法登录管理端！")
-          } else {
-            localStorage.setItem('token',ret.data.token);
-            this.$message.success("登录成功");
-            this.$router.push('/usercenter');
+      if(this.loginForm.email==='') {
+        this.$message.error("输入的邮箱不能为空")
+      } else if(this.loginForm.password==='') {
+        this.$message.error("输入的密码不能为空")
+      } else {
+        let con = {};
+        con['username'] = this.loginForm.email;
+        con['password'] = this.loginForm.password;
+        con['code'] = 0;
+        this.$axios({
+          url: 'https://anitu1.2022martu1.cn:8443/login',
+          method: 'post',
+          data: Qs.stringify(con),
+        }).then((ret) => {
+          // console.log(ret.data)
+          if (ret.data.code === 200) {
+            if (ret.data.data.authority === 'ROLE_USER') {
+              this.$message.error("用户账号无法登录管理端！")
+            } else if (ret.data.data.authority === 'ROLE_VISITOR') {
+              this.$message.error("游客账号无法登录管理端！")
+            } else {
+              localStorage.setItem('token', ret.data.token);
+              this.$message.success("登录成功");
+              this.$router.push('/usercenter');
+            }
+          } else this.$notify.error(ret.data.message + "，登录失败");
+        }).catch((error) => {
+          // console.log(error)
+          if (error.message === 'Request failed with status code 403') {
+            this.$message.error("邮箱或密码错误！")
           }
-        } else this.$notify.error(ret.data.message+"，登录失败");
-      }).catch((error) => {
-        // console.log(error)
-        if(error.message==='Request failed with status code 403') {
-          this.$message.error("邮箱或密码错误！")
-        }
-      })
+        })
+      }
     },
   },
   created () {
