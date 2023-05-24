@@ -10,13 +10,14 @@
                 :auto-upload="true"
                 :before-upload="beforeAvatarUpload"
                 :limit=1
+                :on-exceed="handleExceed"
                 multiple
                 accept=".png,.jpg,.jepg"
                 action
                 :http-request="uploadPic"
                 list-type="picture-card"
                 ref="upload"
-                style="margin-bottom: 20px">
+                >
               <i slot="default" class="el-icon-plus"></i>
               <div slot="file" slot-scope="{file}">
                 <img
@@ -47,6 +48,14 @@
           <el-form-item prop="name">
             <el-input v-model="createFileForm.nickname" class="form__input" type="text" placeholder="昵称"/>
           </el-form-item>
+          <el-form-item prop="kind">
+            <el-select v-model="createFileForm.kind" class="form__input" placeholder="类别" style="display: block;">
+              <el-option label="猫" value="猫"></el-option>
+              <el-option label="狗" value="狗"></el-option>
+              <el-option label="鸟" value="鸟"></el-option>
+              <el-option label="其它" value="其它"></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item prop="type">
             <el-input v-model="createFileForm.category" class="form__input" type="text" placeholder="种类"/>
           </el-form-item>
@@ -54,7 +63,7 @@
 <!--            <el-input v-model="createFileForm.character" class="form__input" type="text" placeholder="性格"/>-->
 <!--          </el-form-item>-->
           <el-form-item prop="weight">
-            <el-input v-model="createFileForm.weight" class="form__input" type="text" placeholder="体重"/>
+            <el-input v-model="createFileForm.weight" class="form__input" type="text" placeholder="体重（单位kg, 数值为正数）"/>
           </el-form-item>
           <el-form-item prop="status">
             <el-select v-model="createFileForm.tnrState" class="form__input" placeholder="绝育状态" style="display: block;">
@@ -92,82 +101,110 @@ export default {
         category:"",
         nickname:"",
         weight:"",
+        kind:"",
         description:"",
         appearLocation:"",
         tnrState:"",
         adoptState:"不可领养",
         character:"",
-        urls:[""]
+        urls:[]
       },
       newForm: {
         category:"",
         nickname:"",
         weight:"",
+        kind:"",
         description:"",
         appearLocation:"",
         tnrState:"",
         adoptState:"不可领养",
-        urls:[""]
+        urls:[]
       },
     }
   },
   methods: {
     create(){
-      let FormDatas = new FormData()
-      FormDatas.append('category',this.createFileForm.category);
-      FormDatas.append('nickname',this.createFileForm.nickname);
-      FormDatas.append('weight',this.createFileForm.weight);
-      FormDatas.append('description',this.createFileForm.description);
-      FormDatas.append('appearLocation',this.createFileForm.appearLocation);
-      FormDatas.append('tnrState',this.createFileForm.tnrState);
-      FormDatas.append('adoptState',this.createFileForm.adoptState);
-      FormDatas.append('urls',this.createFileForm.urls);
-      this.$axios({
-        url: "https://anitu1.2022martu1.cn:8443/createArchive/urls",
-        method: 'post',
-        headers: {
-          'token': localStorage.getItem('token'),
-          // 'content-type':'multipart/form-data'
-        },
-        data: FormDatas
-      }).then((res) => {
-        // console.log(res.data)
-        if (res.data.code === 200) {
-          this.$refs.upload.clearFiles();
-          this.$message.success("添加档案成功");
-          this.createFileForm = this.newForm
-          let NewPage = "_empty" + "?time=" + new Date().getTime() / 500;
-          this.$router.push(NewPage);
-          this.$router.go(-1);
-        } else if (res.data.code === 404) {
-          this.$bus.$emit("showSnackBar", res.data.errMessage)
-        } else this.$notify.error(res.data.errMessage)
-      })
+      if(this.createFileForm.urls.length===0) {
+        this.$message.error("动物图片不能为空");
+      } else if(this.createFileForm.nickname === "") {
+        this.$message.error("动物昵称不能为空");
+      } else if(this.createFileForm.kind === "") {
+        this.$message.error("动物类别不能为空");
+      } else if(this.createFileForm.category === "") {
+        this.$message.error("动物种类不能为空");
+      } else if(this.createFileForm.weight === "") {
+        this.$message.error("动物体重不能为空");
+      } else if(this.createFileForm.weight <= 0) {
+        this.$message.error("动物体重不能为非正数");
+      } else if(this.createFileForm.tnrState === "") {
+        this.$message.error("动物绝育状态不能为空");
+      } else if(this.createFileForm.description === "") {
+        this.$message.error("动物描述不能为空");
+      } else if(this.createFileForm.appearLocation === "") {
+        this.$message.error("动物出没位置不能为空");
+      } else {
+        let FormDatas = new FormData()
+        FormDatas.append('kind', this.createFileForm.kind);
+        FormDatas.append('category', this.createFileForm.category);
+        FormDatas.append('nickname', this.createFileForm.nickname);
+        FormDatas.append('weight', this.createFileForm.weight);
+        FormDatas.append('description', this.createFileForm.description);
+        FormDatas.append('appearLocation', this.createFileForm.appearLocation);
+        FormDatas.append('tnrState', this.createFileForm.tnrState);
+        FormDatas.append('adoptState', this.createFileForm.adoptState);
+        FormDatas.append('urls', this.createFileForm.urls);
+        this.$axios({
+          url: "https://anitu1.2022martu1.cn:8443/createArchive/urls",
+          method: 'post',
+          headers: {
+            'token': localStorage.getItem('token'),
+            // 'content-type':'multipart/form-data'
+          },
+          data: FormDatas
+        }).then((res) => {
+          // console.log(res.data)
+          if (res.data.code === 200) {
+            this.$refs.upload.clearFiles();
+            this.$message.success("添加档案成功");
+            this.createFileForm = this.newForm
+            let NewPage = "_empty" + "?time=" + new Date().getTime() / 500;
+            this.$router.push(NewPage);
+            this.$router.go(-1);
+          } else if (res.data.code === 404) {
+            this.$bus.$emit("showSnackBar", res.data.errMessage)
+          } else this.$notify.error(res.data.errMessage)
+        })
+      }
     },
     uploadPic(item){
-      let FormDatas = new FormData()
-      FormDatas.append('file',item.file);
-      this.$axios({
-        url: "https://anitu1.2022martu1.cn:8443/upload/file/archive/temp",
-        method: 'post',
-        headers: {
-          'token': localStorage.getItem('token'),
-          'content-type':'multipart/form-data'
-        },
-        data: FormDatas
-      }).then((res) => {
-        // console.log(res.data)
-        if (res.data.code === 200) {
-          this.createFileForm.urls[0] = res.data.data
-        } else if (res.data.code === 404) {
-          this.$bus.$emit("showSnackBar", res.data.errMessage)
-        } else this.$notify.error(res.data.errMessage)
-      })
+      // console.log(this.createFileForm.urls.length)
+      if(this.createFileForm.urls.length > 0) {
+        this.$message.error("只能上传一张图片");
+      } else {
+        let FormDatas = new FormData()
+        FormDatas.append('file', item.file);
+        this.$axios({
+          url: "https://anitu1.2022martu1.cn:8443/upload/file/archive/temp",
+          method: 'post',
+          headers: {
+            'token': localStorage.getItem('token'),
+            'content-type': 'multipart/form-data'
+          },
+          data: FormDatas
+        }).then((res) => {
+          // console.log(res.data)
+          if (res.data.code === 200) {
+            this.createFileForm.urls[0] = res.data.data
+          } else if (res.data.code === 404) {
+            this.$bus.$emit("showSnackBar", res.data.errMessage)
+          } else this.$notify.error(res.data.errMessage)
+        })
+      }
     },
     //清除图片缓存
-    handleRemove(file) {
-      console.log(file)
+    handleRemove() {
       this.$refs.upload.clearFiles();
+      this.createFileForm.urls=[]
     },
     //展示图片预览图
     handlePictureCardPreview(file) {
@@ -176,6 +213,11 @@ export default {
     },
     beforeAvatarUpload() {
       return true;
+    },
+    handleExceed(){
+      if(this.createFileForm.urls.length > 0) {
+        this.$message.error("只能上传一张图片");
+      }
     },
   }
 }
