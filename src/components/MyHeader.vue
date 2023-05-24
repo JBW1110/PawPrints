@@ -14,8 +14,18 @@
     <el-drawer
         title="新消息列表"
         :visible.sync="drawer"
-        direction="rtl">
+        direction="rtl"
+        size="440px">
       <v-list subheader>
+        <el-pagination
+            style="margin-left: 10px"
+            @current-change="curChange"
+            @size-change="sizeChange"
+            :current-page="page"
+            :page-size="size"
+            :total="total"
+            :page-sizes="[5,10,20,30,50]"
+            layout="total,sizes,prev,pager,next,jumper"></el-pagination>
         <v-list-item
             v-for="message in messages"
             :key="message.time"
@@ -43,8 +53,11 @@ export default {
   name: "MyHeader",
   data() {
     return {
+      page:1,
+      size:10,
+      total:0,
       noonTip:"",
-      adminName: "蒋博文",
+      adminName: "",
       hidden: false,
       messageCount: 12,
       drawer: false,
@@ -81,10 +94,14 @@ export default {
         },
         data: Qs.stringify({
           status:"未读",
+          pageIndex:this.page-1,
+          pageSize:this.size
         })
       }).then((res)=>{
         if(res.data.code===200){
-          this.messages = res.data.data
+          console.log(res.data.data)
+          this.messages = res.data.data.content
+          this.total = res.data.data.totalElements
         } else if (res.data.code===404){
           this.$message.error("消息列表获取错误")
         } else this.$notify.error(res.data.message)
