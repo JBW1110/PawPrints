@@ -14,16 +14,16 @@
               color="deep-purple accent-4"
               left
           >
-            <v-tab>查看</v-tab>
-            <v-tab>审核</v-tab>
+            <v-tab @click="getPosts">查看</v-tab>
+            <v-tab @click="getCheck">审核</v-tab>
             <v-tab>添加</v-tab>
             <v-tab-item>
               <v-icon color="blue">mdi-clipboard-check-multiple-outline</v-icon>
-              <post-view></post-view>
+              <post-view ref="postView"></post-view>
             </v-tab-item>
             <v-tab-item>
               <v-icon color="blue">mdi-clipboard-check-multiple-outline</v-icon>
-              <post-check></post-check>
+              <post-check ref="postCheck"></post-check>
             </v-tab-item>
             <v-tab-item>
               <v-icon color="blue">mdi-clipboard-check-multiple-outline</v-icon>
@@ -54,6 +54,14 @@ export default {
       });
     }
   },
+  methods: {
+    getPosts(){
+      this.$refs.postView.searchPost()
+    },
+    getCheck(){
+      this.$refs.postCheck.getPosts()
+    }
+  }
 }
 </script>
 
