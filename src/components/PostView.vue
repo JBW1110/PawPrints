@@ -18,9 +18,14 @@
 <!--        </el-dropdown>-->
 <!--      </div>-->
     </div>
-    <el-pagination @current-change="curChange()" @size-change="sizeChange"
-                   :current-page="page" :page-size="size" :total="total"
-                   layout="total,sizes,prev,pager,next,jumper"></el-pagination>
+    <el-pagination
+        @current-change="curChange"
+        @size-change="sizeChange"
+        :current-page="page"
+        :page-size="size"
+        :total="total"
+        :page-sizes="[5,10,20,30,50]"
+        layout="total,sizes,prev,pager,next,jumper"></el-pagination>
     <div class="posts-container" style="margin-top: 10px">
       <div class="postBar" v-for="post in postList" :key="post.data">
         <div  @click="getComment(post)"><img :src="post.postImgUrls[0]" alt="帖子封面" class="post_picture"></div>
@@ -73,9 +78,14 @@
               </div>
               <pre style="white-space:pre-wrap">{{ post.content }}</pre>
             </v-card-text>
-<!--            <el-pagination @current-change="curCommentChange(val,post)" @size-change="sizeCommentChange(val,post)"-->
-<!--                           :current-page="comment_page" :page-size="comment_size" :total="comment_total" :page-sizes="comment_pageSizes"-->
-<!--                           layout="total,sizes,prev,pager,next,jumper"></el-pagination>-->
+            <el-pagination
+                @current-change="curCommentChange"
+                @size-change="sizeCommentChange"
+                :current-page="comment_page"
+                :page-size="comment_size"
+                :total="comment_total"
+                :page-sizes="[1,2,3,10,20]"
+                layout="total,sizes,prev,pager,next,jumper"></el-pagination>
             <v-list>
               <v-list-item
                   v-for="comment in post.commentDTOS"
@@ -141,13 +151,13 @@ export default {
   // components:{SvgIcon},
   data(){
     return{
-      page:0,
+      curPost:{},
+      page:1,
       size:10,
       total:0,
       comment_page:0,
       comment_size:10,
       comment_total:0,
-      comment_pageSizes:[1,2,3,10,20],
       pathUp:mdiThumbUp,
       searchPostName: '',
       tag:'',
@@ -194,8 +204,8 @@ export default {
           postId:post.id,
         })
       }).then((res)=>{
-        // console.log(post)
         if(res.data.code===200){
+          this.curPost = post
           post.show = !post.show
           post.commentDTOS = res.data.data.content
           this.comment_total = post.commentCount
@@ -213,28 +223,28 @@ export default {
         },
         data: Qs.stringify({
           postId:post.id,
-          pageIndex:this.comment_page,
+          pageIndex:this.comment_page-1,
           pageSize:this.comment_size
         })
       }).then((res)=>{
         // console.log(post)
         if(res.data.code===200){
-          // console.log(res.data.data)
+          this.curPost.show = !this.curPost.show
+          this.curPost.show = !this.curPost.show
           post.commentDTOS = res.data.data.content
         } else if (res.data.code===404){
           this.$bus.$emit("showSnackBar", res.data.errMessage)
         } else this.$notify.error(res.data.message)
       })
     },
-    curCommentChange(val,post) {
-      this.page = val;
-      console.log(post)
-      this.getComment2(post)
+    curCommentChange(val) {
+      this.comment_page = val;
+      this.getComment2(this.curPost)
     },
-    sizeCommentChange(val,post) {
-      this.size = val;
-      this.page = 1;
-      this.getComment2(post)
+    sizeCommentChange(val) {
+      this.comment_size = val;
+      this.comment_page = 1;
+      this.getComment2(this.curPost)
     },
     getPosts() {
       this.$axios({
@@ -246,12 +256,12 @@ export default {
         data: Qs.stringify({
           'type': '科普',
           'status': '审核通过',
-          pageIndex:this.page,
+          'keyword': this.searchPostName,
+          pageIndex:this.page-1,
           pageSize:this.size
         })
       }).then((res)=>{
         if(res.data.code===200){
-          console.log(res.data.data)
           this.postList = res.data.data.content
           this.total = res.data.data.totalElements
         } else if (res.data.code===404){
@@ -261,11 +271,10 @@ export default {
     },
     curChange(val) {
       this.page = val;
-      this.searchPost()
+      this.getPosts()
     },
     sizeChange(val) {
       this.size = val;
-      this.page = 1;
       this.searchPost()
     },
     searchPost(){
@@ -363,7 +372,7 @@ export default {
     }
   },
   mounted() {
-    this.getPosts();
+    this.searchPost()
   }
 }
 </script>

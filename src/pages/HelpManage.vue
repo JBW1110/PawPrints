@@ -10,9 +10,14 @@
       <el-main>
         <v-app>
           <v-list subheader>
-            <el-pagination @current-change="curChange" @size-change="sizeChange"
-                           :current-page="page" :page-size="size" :total="total"
-                           layout="total,sizes,prev,pager,next,jumper"></el-pagination>
+            <el-pagination
+                @current-change="curChange"
+                @size-change="sizeChange"
+                :current-page="page"
+                :page-size="size"
+                :total="total"
+                :page-sizes="[5,10,20,30,50]"
+                layout="total,sizes,prev,pager,next,jumper"></el-pagination>
             <v-list-item
                 v-for="help in helpList"
                 :key="help.name">
@@ -117,7 +122,7 @@ export default {
   components: {MyHeader,SideBar},
   data() {
     return {
-      page:0,
+      page:1,
       size:10,
       total:0,
       role:"",
@@ -169,7 +174,7 @@ export default {
         },
         data: Qs.stringify({
           type:'求助',
-          pageIndex:this.page,
+          pageIndex:this.page-1,
           pageSize:this.size
         })
       }).then((res)=>{

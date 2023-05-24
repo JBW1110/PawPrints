@@ -1,8 +1,13 @@
 <template>
   <v-app>
     <div class="files-container" style="margin-top: 10px">
-      <el-pagination @current-change="curChange" @size-change="sizeChange"
-          :current-page="page" :page-size="size" :total="total"
+      <el-pagination
+          @current-change="curChange"
+          @size-change="sizeChange"
+          :current-page="page"
+          :page-size="size"
+          :total="total"
+          :page-sizes="[5,10,20,30,50]"
           layout="total,sizes,prev,pager,next,jumper"></el-pagination>
       <div class="fileBar" v-for="file in fileList" :key="file.data">
         <div @click="file.show = !file.show"><img :src="file.urls[0]" alt="动物照片" class="file_picture"></div>
@@ -65,7 +70,7 @@ export default {
   data() {
     return{
       isEdit: false,
-      page:0,
+      page:1,
       size:10,
       total:0,
       fileList:[
@@ -104,6 +109,7 @@ export default {
       this.isEdit = !this.isEdit
     },
     getFileList () {
+      // console.log(this.size,this.page)
       this.$axios({
         url: "https://anitu1.2022martu1.cn:8443/query/archiveList",
         method: 'post',
@@ -111,7 +117,7 @@ export default {
           'token': localStorage.getItem('token')
         },
         data: Qs.stringify({
-          pageIndex:this.page,
+          pageIndex:this.page-1,
           pageSize:this.size
         })
       }).then((res) => {

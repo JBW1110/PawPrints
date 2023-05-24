@@ -1,9 +1,14 @@
 <template>
   <div style="height: 800px;">
     <div class="posts-container" style="margin-top: 10px">
-      <el-pagination @current-change="curChange" @size-change="sizeChange"
-                     :current-page="page" :page-size="size" :total="total"
-                     layout="total,sizes,prev,pager,next,jumper"></el-pagination>
+      <el-pagination
+          @current-change="curChange"
+          @size-change="sizeChange"
+          :current-page="page"
+          :page-size="size"
+          :total="total"
+          :page-sizes="[5,10,20,30,50]"
+          layout="total,sizes,prev,pager,next,jumper"></el-pagination>
       <div class="postBar" v-for="post in postList" :key="post.data" @click="post.show = !post.show">
         <div><img :src="post.postImgUrls[0]" alt="帖子封面" class="post_picture"></div>
         <div class="post_name">{{post.title.length > 30 ? post.title.substring(0,30)+' ...':post.title}}</div>
@@ -79,7 +84,7 @@ export default {
   name: 'PostCheck',
   data(){
     return{
-      page:0,
+      page:1,
       size:10,
       total:0,
       searchPostName: '',
@@ -120,7 +125,7 @@ export default {
         data: Qs.stringify({
           'type': '科普',
           'status': '审核中',
-          pageIndex:this.page,
+          pageIndex:this.page-1,
           pageSize:this.size
         })
       }).then((res)=>{
@@ -134,12 +139,12 @@ export default {
     },
     curChange(val) {
       this.page = val;
-      this.searchPost()
+      this.getPosts()
     },
     sizeChange(val) {
       this.size = val;
       this.page = 1;
-      this.searchPost()
+      this.getPosts()
     },
     changeState(status,post){
       this.$axios({
