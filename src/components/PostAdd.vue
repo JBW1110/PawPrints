@@ -10,6 +10,7 @@
                 :auto-upload="true"
                 :limit=1
                 multiple
+                :on-exceed="handleExceed"
                 accept=".png,.jpg,.jepg"
                 action
                 :http-request="uploadPic"
@@ -88,31 +89,41 @@ export default {
   },
   methods: {
     create () {
-      let FormDatas = new FormData()
-      FormDatas.append('type', this.createPostForm.type);
-      FormDatas.append('title', this.createPostForm.title);
-      FormDatas.append('content', this.createPostForm.content);
-      FormDatas.append('urls', this.createPostForm.urls);
-      this.$axios({
-        url: "https://anitu1.2022martu1.cn:8443/createPost/urls",
-        method: 'post',
-        headers: {
-          'token': localStorage.getItem('token'),
-        },
-        data: FormDatas
-      }).then((res) => {
-        console.log(res.data)
-        if (res.data.code === 200) {
-          this.$message.success("新建帖子成功");
-          this.createPostForm = this.newForm
-          this.$refs.upload.clearFiles();
-          let NewPage = "_empty" + "?time=" + new Date().getTime() / 500;
-          this.$router.push(NewPage);
-          this.$router.go(-1);
-        } else if (res.data.code === 404) {
-          this.$bus.$emit("showSnackBar", res.data.errMessage)
-        } else this.$notify.error(res.data.errMessage)
-      })
+      if(this.createPostForm.urls.length===0) {
+        this.$message.error("帖子图片不能为空");
+      } else if(this.createPostForm.title === "") {
+        this.$message.error("帖子标题不能为空");
+      } else if(this.createPostForm.content === "") {
+        this.$message.error("帖子内容不能为空");
+      } else if(this.createPostForm.type === "") {
+        this.$message.error("帖子类型不能为空");
+      } else {
+        let FormDatas = new FormData()
+        FormDatas.append('type', this.createPostForm.type);
+        FormDatas.append('title', this.createPostForm.title);
+        FormDatas.append('content', this.createPostForm.content);
+        FormDatas.append('urls', this.createPostForm.urls);
+        this.$axios({
+          url: "https://anitu1.2022martu1.cn:8443/createPost/urls",
+          method: 'post',
+          headers: {
+            'token': localStorage.getItem('token'),
+          },
+          data: FormDatas
+        }).then((res) => {
+          console.log(res.data)
+          if (res.data.code === 200) {
+            this.$message.success("新建帖子成功");
+            this.createPostForm = this.newForm
+            this.$refs.upload.clearFiles();
+            let NewPage = "_empty" + "?time=" + new Date().getTime() / 500;
+            this.$router.push(NewPage);
+            this.$router.go(-1);
+          } else if (res.data.code === 404) {
+            this.$bus.$emit("showSnackBar", res.data.errMessage)
+          } else this.$notify.error(res.data.errMessage)
+        })
+      }
     },
     uploadPic(item) {
       let FormDatas = new FormData()
@@ -138,11 +149,17 @@ export default {
     handleRemove (file) {
       console.log(file)
       this.$refs.upload.clearFiles();
+      this.createPostForm.urls=[]
     },
     //展示图片预览图
     handlePictureCardPreview (file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
+    },
+    handleExceed(){
+      if(this.createPostForm.urls.length > 0) {
+        this.$message.error("只能上传一张图片");
+      }
     },
   }
 }
