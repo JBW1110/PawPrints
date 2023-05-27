@@ -22,12 +22,16 @@
           上传头像
         </v-btn>
         <div>
-          <el-dialog :visible.sync="dialogVisible">
+          <el-dialog
+              :visible.sync="dialogVisible"
+              v-if="dialogVisible"
+              @close="resetPic">
             <el-upload
                 :auto-upload="true"
                 :before-upload="beforeAvatarUpload"
                 :limit=1
                 multiple
+                :on-exceed="handleExceed"
                 accept=".png,.jpg,.jepg"
                 action
                 :http-request="uploadPic"
@@ -64,7 +68,10 @@
           </el-dialog>
         </div>
         <div>
-          <el-dialog :visible.sync="dialogFormVisible">
+          <el-dialog
+              :visible.sync="dialogFormVisible"
+              v-if="dialogFormVisible"
+              @close="resetInfor">
             <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px"
                      class="demo-ruleForm">
               <el-form-item label="原始密码" prop="oldPass">
@@ -84,6 +91,12 @@
           </el-dialog>
         </div>
       </v-row>
+      <v-row align-self="center" style="margin-top: 30px">
+        <v-card>
+              <img :src="user_avatar" alt="头像" v-if="!modified" width="300px" height="300px">
+              <img :src="cur_avatar" alt="头像" v-if="modified" width="300px" height="300px">
+        </v-card>
+      </v-row>
       <MySnackBar></MySnackBar>
     </v-app>
   </div>
@@ -98,6 +111,7 @@ import { mdiCardAccountDetails } from '@mdi/js'
 export default {
   name: "MyUserCenterHeader",
   components: {MySnackBar,SvgIcon},
+  props: ["user_avatar"],
   data() {
     let validatePass = (rule, value, callback) => {
       if (value === '') {
@@ -127,6 +141,7 @@ export default {
     };
     return {
       avatar:'',
+      cur_avatar: '',
       path:mdiCardAccountDetails,
       id:localStorage.getItem('user_id'),
       modified:false,
@@ -169,15 +184,16 @@ export default {
               newPassword:this.ruleForm.pass,
             })
           }).then((res)=>{
-            // console.log(res.data)
+            console.log(res.data)
             if(res.data.code===200){
               this.dialogFormVisible = false
               this.ruleForm.oldPass = ""
               this.ruleForm.pass = ""
               this.ruleForm.checkPass = ""
               this.$bus.$emit("showSnackBar", "修改密码成功！")
-            } else if (res.data.code===404){
-              this.$bus.$emit("showSnackBar", res.data.errMessage)
+            } else if (res.data.code===996){
+              this.ruleForm.oldPass = ""
+              this.$message.error(res.data.errMessage)
             } else this.$notify.error(res.data.message)
           })
         } else {
@@ -186,6 +202,15 @@ export default {
         }
       });
     },
+    resetInfor() {
+      this.ruleForm.oldPass = ""
+      this.ruleForm.pass = ""
+      this.ruleForm.checkPass = ""
+    },
+    resetPic() {
+      this.avatar = ''
+      this.$refs.upload.clearFiles();
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
@@ -193,23 +218,30 @@ export default {
       this.dialogVisible = true;
     },
     updateAvatar(){
-      this.$axios({
-        url: "https://anitu1.2022martu1.cn:8443/user/update/headImg/url",
-        method: 'post',
-        headers: {
-          'token': localStorage.getItem('token'),
-          // 'content-type':'multipart/form-data'
-        },
-        data: Qs.stringify({
-          url:this.avatar
+      if(this.avatar === '') {
+        this.$message.error("上传头像不能为空");
+      } else {
+        this.$axios({
+          url: "https://anitu1.2022martu1.cn:8443/user/update/headImg/url",
+          method: 'post',
+          headers: {
+            'token': localStorage.getItem('token'),
+            // 'content-type':'multipart/form-data'
+          },
+          data: Qs.stringify({
+            url:this.avatar
+          })
+        }).then((res) => {
+          // console.log(res.data)
+          if (res.data.code === 200) {
+            this.cur_avatar = this.avatar
+            this.modified = true
+            this.$refs.upload.clearFiles();
+            this.avatar = ''
+            this.$message.success("头像上传成功");
+          } else this.$notify.error(res.data.errMessage)
         })
-      }).then((res) => {
-        // console.log(res.data)
-        if (res.data.code === 200) {
-          this.$refs.upload.clearFiles();
-          this.$message.success("头像上传成功");
-        } else this.$notify.error(res.data.errMessage)
-      })
+      }
     },
     uploadPic(item){
       let FormDatas = new FormData()
@@ -234,6 +266,7 @@ export default {
     //清除图片缓存
     handleRemove(file) {
       console.log(file)
+      this.avatar = ''
       this.$refs.upload.clearFiles();
     },
     //展示图片预览图
@@ -243,6 +276,9 @@ export default {
     },
     beforeAvatarUpload() {
       return true;
+    },
+    handleExceed(){
+      this.$message.error("只能上传一张图片");
     },
   },
   created() {

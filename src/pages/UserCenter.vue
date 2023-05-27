@@ -12,7 +12,7 @@
       </el-header>
       <el-container>
         <el-main>
-          <MyUserCenterHeader></MyUserCenterHeader>
+          <MyUserCenterHeader :user_avatar="user.headImgUrl"></MyUserCenterHeader>
         </el-main>
         <el-main class="el-main-table">
           <el-descriptions class="margin-top" :column="1" border>
@@ -62,13 +62,13 @@
 <!--                <i class="el-icon-mobile-phone"></i>-->
 <!--                手机号-->
 <!--              </template>-->
-              <label v-show="!isEdit">{{ user.phone }}</label>
-              <el-input size="mini" v-model="user.phone" v-show="isEdit"></el-input>
+<!--              <label v-show="!isEdit">{{ user.phone }}</label>-->
+<!--              <el-input size="mini" v-model="user.phone" v-show="isEdit"></el-input>-->
 <!--            </el-descriptions-item>-->
           </el-descriptions>
           <div class="flexs">
             <el-button type="primary" @click="submitChangeInfo">{{ mode }}</el-button>
-            <el-button type="primary" v-show="isEdit" @click="isEdit = !isEdit">取消</el-button>
+            <el-button type="primary" v-show="isEdit" @click="cancelChange">取消</el-button>
           </div>
         </el-main>
       </el-container>
@@ -135,6 +135,10 @@ export default {
         } else this.$notify.error(res.data.message)
       })
     },
+    cancelChange() {
+      this.getUserInformation()
+      this.isEdit = !this.isEdit
+    }
   },
   computed: {
     mode() {
