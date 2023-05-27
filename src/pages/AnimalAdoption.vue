@@ -14,13 +14,13 @@
               color="deep-purple accent-4"
               left
           >
-            <v-tab>审批</v-tab>
-            <v-tab>发布</v-tab>
+            <v-tab @click="getMember">审批</v-tab>
+            <v-tab @click="getFile">发布</v-tab>
             <v-tab-item>
-              <adoption-approval></adoption-approval>
+              <adoption-approval ref="approval"></adoption-approval>
             </v-tab-item>
             <v-tab-item>
-              <adoption-publish></adoption-publish>
+              <adoption-publish ref="publish"></adoption-publish>
             </v-tab-item>
           </v-tabs>
         </v-app>
@@ -46,6 +46,14 @@ export default {
       });
     }
   },
+  methods: {
+    getFile(){
+      this.$refs.publish.getFileList()
+    },
+    getMember(){
+      this.$refs.approval.getMemberList()
+    }
+  }
 }
 </script>
 

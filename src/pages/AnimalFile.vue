@@ -14,11 +14,11 @@
               color="deep-purple accent-4"
               left
           >
-            <v-tab>查看</v-tab>
+            <v-tab @click="getFile">查看</v-tab>
             <v-tab>添加</v-tab>
             <v-tab-item>
               <v-icon color="blue">mdi-clipboard-check-multiple-outline</v-icon>
-              <file-view></file-view>
+              <file-view ref="view"></file-view>
             </v-tab-item>
             <v-tab-item>
               <v-icon color="blue">mdi-clipboard-check-multiple-outline</v-icon>
@@ -48,6 +48,11 @@ export default {
       });
     }
   },
+  methods: {
+    getFile () {
+      this.$refs.view.getFileList()
+    }
+  }
 }
 </script>
 
