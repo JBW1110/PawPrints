@@ -124,11 +124,12 @@ export default {
           'token': localStorage.getItem('token')
         },
         data: Qs.stringify({
+          status:'申请中',
           pageIndex:this.page,
           pageSize:this.size
         })
       }).then((res) => {
-        // console.log(res.data)
+        console.log(res.data)
         if (res.data.code === 200) {
           this.members = res.data.data.content
           this.total = res.data.data.totalElements

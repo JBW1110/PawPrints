@@ -39,9 +39,9 @@
               <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="!isEdit">体重：{{ file.weight }}kg</pre>
               <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="isEdit">体重：</pre>
               <el-input style="margin-bottom: 10px" size="mini" v-model="file.weight" v-show="isEdit"></el-input>
-              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="!isEdit">领养状态：{{ file.adoptState }}</pre>
-              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="isEdit">领养状态：</pre>
-              <el-input style="margin-bottom: 10px" size="mini" v-model="file.adoptState" v-show="isEdit"></el-input>
+              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px">领养状态：{{ file.adoptState }}</pre>
+<!--              <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px" v-show="isEdit">领养状态：</pre>-->
+<!--              <el-input style="margin-bottom: 10px" size="mini" v-model="file.adoptState" v-show="isEdit"></el-input>-->
               <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px;white-space:pre-wrap" v-show="!isEdit">描述：{{file.description}}</pre>
               <pre style="font-size: 20px;color: #181818;font-weight: bold;margin-bottom: 10px;" v-show="isEdit">描述：</pre>
               <el-input style="margin-bottom: 10px" size="mini" v-model="file.description" v-show="isEdit"></el-input>

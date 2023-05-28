@@ -410,6 +410,7 @@ export default {
   margin-right: 30px;
 }
 .post_name {
+  word-break: break-all;
   font-size: 30px;
   width: 300px;
   float: left;
