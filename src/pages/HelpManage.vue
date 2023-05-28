@@ -143,27 +143,31 @@ export default {
   },
   methods: {
     changeState(status,help){
-      this.$axios({
-        url:"https://anitu1.2022martu1.cn:8443/changePostState",
-        method: 'post',
-        headers: {
-          'token': localStorage.getItem('token')
-        },
-        data: Qs.stringify({
-          postId:help.id,
-          newStatus:status,
-          notes:help.notes
+      if(help.notes.length>200) {
+        this.$message.error("备注限制最多200字");
+      } else {
+        this.$axios({
+          url: "https://anitu1.2022martu1.cn:8443/changePostState",
+          method: 'post',
+          headers: {
+            'token': localStorage.getItem('token')
+          },
+          data: Qs.stringify({
+            postId: help.id,
+            newStatus: status,
+            notes: help.notes
+          })
+        }).then((res) => {
+          // console.log(res.data)
+          if (res.data.code === 200) {
+            help.status = status
+            help.show = false
+            this.$message.success("状态变成" + status);
+          } else if (res.data.code === 404) {
+            this.$bus.$emit("showSnackBar", res.data.errMessage)
+          } else this.$notify.error(res.data.errMessage)
         })
-      }).then((res)=>{
-        // console.log(res.data)
-        if(res.data.code===200){
-          help.status = status
-          help.show = false
-          this.$message.success("状态变成"+status);
-        } else if (res.data.code===404){
-          this.$bus.$emit("showSnackBar", res.data.errMessage)
-        } else this.$notify.error(res.data.errMessage)
-      })
+      }
     },
     getHelpList(){
       this.$axios({
