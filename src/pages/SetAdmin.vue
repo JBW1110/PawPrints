@@ -123,7 +123,7 @@ export default {
           pageSize:this.size
         })
       }).then((res) => {
-        // console.log(res.data)
+        console.log(res.data)
         if (res.data.code === 200) {
           this.members = res.data.data.content
           this.total = res.data.data.totalElements
@@ -134,12 +134,12 @@ export default {
     },
     curChange(val) {
       this.page = val;
-      this.getFileList()
+      this.getMembers()
     },
     sizeChange(val) {
       this.size = val;
       this.page = 1;
-      this.getFileList()
+      this.getMembers()
     },
   },
   mounted () {
