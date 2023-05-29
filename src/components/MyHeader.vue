@@ -105,6 +105,11 @@ export default {
         } else if (res.data.code===404){
           this.$message.error("消息列表获取错误")
         } else this.$notify.error(res.data.message)
+      }).catch((response)=>{
+        if(response.code==='ERR_BAD_REQUEST') {
+          this.quit()
+          this.$message.error("登录过期，请重新登录")
+        }
       })
     },
     deleteMessage(id) {
